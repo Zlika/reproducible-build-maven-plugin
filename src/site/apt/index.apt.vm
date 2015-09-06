@@ -1,0 +1,27 @@
+ ------
+ Introduction
+ ------
+ ------
+ ------
+
+
+
+Reproducible Build Maven Plugin
+
+*Please Note - This plugin requires Java 8.
+  
+ Have you ever tried to compile twice the same sources with Maven and compare the hashes of the generated artifacts? It's not the same! Maven is not able to build a program in a real reproducible (i.e. byte-for-byte) way.
+ 
+ This small Maven plugin tries to strip "non reproducible" data from the generated artifacts. It follows the same goals as Debian's Reproducible Builds project (cf. https://wiki.debian.org/ReproducibleBuilds) but at the modest scale of a Maven project.
+ 
+ Using this plugin is a no-brainer: simple add it to your pom and bind the "strip" goal to the "package phase", and it will try to "automagically" make the build byte-for-byte reproducible.
+ 
+ Currently, the plugin removes the following "non reproducible" items in ZIP/JAR/WAR/EAR files found in the target repository of the Maven module:
+ 
+  * file timestamps in ZIP entries,
+  
+  * timestamps, user names and tool versions in MANIFEST.MF,
+  
+  * comments in pom.properties file (some of them can contain time/date).
+ 
+ If you find other interesting sources of "non reproducible" data that this plugin could remove, please open a ticket in the bug tracker or send a pull request.

@@ -1,0 +1,235 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.github.zlika</groupId>
+  <artifactId>reproducible-build-maven-plugin</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>maven-plugin</packaging>
+
+  <name>Reproducible Build Maven Plugin</name>
+  <description>This Plug-In allows to generates bit-for-bit reproducible artefacts</description>
+  <url>http://zlika.github.io/reproducible-build-maven-plugin</url>
+  
+  <inceptionYear>2015</inceptionYear>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <scm>
+    <connection>scm:git:git@github.com:zlika/reproducible-build-maven-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:zlika/reproducible-build-maven-plugin.git</developerConnection>
+    <url>https://github.com/zlika/reproducible-build-maven-plugin</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>http://github.com/zlika/reproducible-build-maven-plugin/issues</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>github-project-site</id>
+      <url>gitsite:git@github.com/zlika/reproducible-build-maven-plugin.git</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    
+    <!-- Maven plugin versions -->
+    <findbugs-maven-plugin.version>3.0.2</findbugs-maven-plugin.version>
+    <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+    <maven-invoker-plugin.version>2.0.0</maven-invoker-plugin.version>
+    <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+    <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
+    <maven-project-info-reports-plugin.version>2.8</maven-project-info-reports-plugin.version>
+    <maven-release-plugin.version>2.5.2</maven-release-plugin.version>
+    <maven-site-plugin.version>3.4</maven-site-plugin.version>
+    <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
+    
+    <!-- Dependency versions -->
+    <junit.version>4.12</junit.version>
+    <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
+    <maven-plugin-api.version>3.3.3</maven-plugin-api.version>
+    <plexus-utils.version>3.0.22</plexus-utils.version>
+    
+  </properties>
+
+  <dependencies>
+  
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>${maven-plugin-api.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>${maven-plugin-annotations.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>${plexus-utils.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+
+  <build>
+
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven-release-plugin.version}</version>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+    
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>${maven-plugin-plugin.version}</version>
+        <configuration>
+          <goalPrefix>reproducible-build-maven-plugin</goalPrefix>
+          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+        </configuration>
+        <executions>
+          <execution>
+            <id>mojo-descriptor</id>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>help-goal</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${findbugs-maven-plugin.version}</version>
+        <configuration>
+          <effort>max</effort>
+          <threshold>Default</threshold>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>${maven-plugin-plugin.version}</version>
+        <configuration>
+          <requirements>
+            <jdk>${project.build.java.target}</jdk>
+          </requirements>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>${maven-project-info-reports-plugin.version}</version>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
+  <profiles>
+
+    <profile>
+      <id>run-its</id>
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <version>${maven-invoker-plugin}</version>
+            <configuration>
+              <debug>true</debug>
+              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+              <pomIncludes>
+                <pomInclude>*/pom.xml</pomInclude>
+              </pomIncludes>
+              <postBuildHookScript>verify</postBuildHookScript>
+              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+              <settingsFile>src/it/settings.xml</settingsFile>
+              <goals>
+                <goal>clean</goal>
+                <goal>test-compile</goal>
+              </goals>
+            </configuration>
+            <executions>
+              <execution>
+                <id>integration-test</id>
+                <goals>
+                  <goal>install</goal>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+</project>
