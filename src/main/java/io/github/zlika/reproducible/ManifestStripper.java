@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
  * - Created-By
  * - Build-Jdk
  * - Build-Date / Build-Time
+ * - Bnd-LastModified
  */
 final class ManifestStripper implements Stripper
 {
@@ -43,6 +44,7 @@ final class ManifestStripper implements Stripper
                         .filter(s -> !s.contains("Build-Jdk"))
                         .filter(s -> !s.contains("Build-Date"))
                         .filter(s -> !s.contains("Build-Time"))
+                        .filter(s -> !s.contains("Bnd-LastModified"))
                         .forEach(s -> 
                         {
                             try

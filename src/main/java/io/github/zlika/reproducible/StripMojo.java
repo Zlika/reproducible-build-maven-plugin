@@ -35,6 +35,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class StripMojo extends AbstractMojo
 {
     private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear" };
+    private static final String PLUGIN_TMP_FOLDER = "reproducible-maven-plugin";
     
     @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
     private File outputDirectory;
@@ -51,7 +52,7 @@ public class StripMojo extends AbstractMojo
                 try (final FileInputStream zin = new FileInputStream(zip);
                     final FileOutputStream zout = new FileOutputStream(tmp))
                 {
-                    new ZipStripper()
+                    new ZipStripper(getZipStripperTmpFolder(zip))
                         .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
                         .addFileStripper("META-INF/maven/org.test/test/pom.properties", new PomPropertiesStripper())
                         .strip(zin, zout);
@@ -69,5 +70,15 @@ public class StripMojo extends AbstractMojo
     {
         return folder.listFiles((dir, name) ->
                 Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith(ext)));
+    }
+    
+    private File getZipStripperTmpFolder(File zipFile)
+    {
+        return new File(new File(outputDirectory, PLUGIN_TMP_FOLDER), filenameWithoutExtension(zipFile.getName()));
+    }
+    
+    private String filenameWithoutExtension(String filename)
+    {
+        return filename.replaceFirst("[.][^.]+$", "");
     }
 }

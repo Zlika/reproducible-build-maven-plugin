@@ -15,6 +15,7 @@
 package io.github.zlika.reproducible;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -52,7 +53,7 @@ public class ZipStripperTest
                 final ByteArrayOutputStream os = new ByteArrayOutputStream();
                 final InputStream expectedIs = this.getClass().getResourceAsStream(strippedJarName))
         {
-            new ZipStripper()
+            new ZipStripper(new File("target/reproducible-maven-plugin/" + this.getClass().getName()))
                 .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
                 .addFileStripper("META-INF/maven/org.test/test/pom.properties", new PomPropertiesStripper())
                 .strip(is, os);
