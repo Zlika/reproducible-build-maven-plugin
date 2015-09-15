@@ -34,21 +34,21 @@ public class ZipStripperTest
     @Test
     public void testStripZip() throws IOException
     {
-    	final String testJarName;
-    	final String strippedJarName;
-    	// Results are different on Linux and Windows because of line endings,
-    	// so we use different test files
-    	if (System.getProperty("line.separator").length() == 1)
-    	{
-    		testJarName = "test-jar-lf.jar";
-    		strippedJarName = "test-jar-lf-stripped.jar";
-    	}
-    	else
-    	{
-    		testJarName = "test-jar-crlf.jar";
-    		strippedJarName = "test-jar-crlf-stripped.jar";
-    	}
-    	
+        final String testJarName;
+        final String strippedJarName;
+        // Results are different on Linux and Windows because of line endings,
+        // so we use different test files
+        if (System.getProperty("os.name").toLowerCase().contains("win"))
+        {
+            testJarName = "test-jar-crlf.jar";
+            strippedJarName = "test-jar-crlf-stripped.jar";
+        }
+        else
+        {
+            testJarName = "test-jar-lf.jar";
+            strippedJarName = "test-jar-lf-stripped.jar";
+        }
+        
         try (final InputStream is = this.getClass().getResourceAsStream(testJarName);
                 final ByteArrayOutputStream os = new ByteArrayOutputStream();
                 final InputStream expectedIs = this.getClass().getResourceAsStream(strippedJarName))
