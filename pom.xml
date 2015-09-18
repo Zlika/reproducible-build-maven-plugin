@@ -21,18 +21,18 @@
   </licenses>
   
   <scm>
-    <connection>scm:git:git@github.com:zlika/reproducible-build-maven-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:zlika/reproducible-build-maven-plugin.git</developerConnection>
-    <url>https://github.com/zlika/reproducible-build-maven-plugin</url>
+    <connection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</developerConnection>
+    <url>https://github.com/Zlika/reproducible-build-maven-plugin</url>
   </scm>
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>http://github.com/zlika/reproducible-build-maven-plugin/issues</url>
+    <url>http://github.com/Zlika/reproducible-build-maven-plugin/issues</url>
   </issueManagement>
   <distributionManagement>
     <site>
       <id>github-project-site</id>
-      <url>gitsite:git@github.com/zlika/reproducible-build-maven-plugin.git</url>
+      <url>gitsite:git@github.com:Zlika/reproducible-build-maven-plugin.git</url>
     </site>
   </distributionManagement>
 
@@ -50,6 +50,7 @@
     <maven-project-info-reports-plugin.version>2.8</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>2.5.2</maven-release-plugin.version>
     <maven-scm.version>1.9.4</maven-scm.version>
+    <maven-source-plugin.version>2.4</maven-source-plugin.version>
     <maven-site-plugin.version>3.4</maven-site-plugin.version>
     <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
     <wagon-gitsite.version>0.3.1</wagon-gitsite.version>
@@ -101,6 +102,8 @@
 
   <build>
   
+    <!-- Extensions to deploy site documentation to Github using Github's pages system.
+         Cf. http://khuxtable.github.io/wagon-gitsite/ -->
     <extensions>
       <extension>
         <groupId>org.apache.maven.scm</groupId>
@@ -227,7 +230,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>${maven-invoker-plugin}</version>
+            <version>${maven-invoker-plugin.version}</version>
             <configuration>
               <debug>true</debug>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
@@ -254,6 +257,41 @@
             </executions>
           </plugin>
 
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile> 
+      <id>release</id>
+      <build>
+        <plugins>
+          
+          <!-- Generate source attachment -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals><goal>jar-no-fork</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <!-- Generate javadoc attachment -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals><goal>jar</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          
         </plugins>
       </build>
     </profile>
