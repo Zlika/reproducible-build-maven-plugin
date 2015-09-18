@@ -8,7 +8,7 @@
   <packaging>maven-plugin</packaging>
 
   <name>Reproducible Build Maven Plugin</name>
-  <description>This Plug-In allows to generates bit-for-bit reproducible artefacts</description>
+  <description>This Plug-In allows to generate byte-for-byte reproducible artefacts</description>
   <url>http://zlika.github.io/reproducible-build-maven-plugin</url>
   
   <inceptionYear>2015</inceptionYear>
@@ -55,6 +55,7 @@
     <wagon-gitsite.version>0.3.1</wagon-gitsite.version>
     
     <!-- Dependency versions -->
+    <commons-compress.version>1.10</commons-compress.version>
     <junit.version>4.12</junit.version>
     <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
     <maven-plugin-api.version>3.3.3</maven-plugin-api.version>
@@ -81,6 +82,12 @@
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>${plexus-utils.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>${commons-compress.version}</version>
     </dependency>
     
     <dependency>

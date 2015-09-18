@@ -14,10 +14,9 @@
 
 package io.github.zlika.reproducible;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,32 +33,20 @@ public class ZipStripperTest
     @Test
     public void testStripZip() throws IOException
     {
-        final String testJarName;
-        final String strippedJarName;
-        // Results are different on Linux and Windows because of line endings,
-        // so we use different test files
-        if (System.getProperty("os.name").toLowerCase().contains("win"))
-        {
-            testJarName = "test-jar-crlf.jar";
-            strippedJarName = "test-jar-crlf-stripped.jar";
-        }
-        else
-        {
-            testJarName = "test-jar-lf.jar";
-            strippedJarName = "test-jar-lf-stripped.jar";
-        }
+        final String testJarName = "test-jar.jar";
+        final String strippedJarName = "test-jar-stripped.jar";
         
-        try (final InputStream is = this.getClass().getResourceAsStream(testJarName);
-                final ByteArrayOutputStream os = new ByteArrayOutputStream();
-                final InputStream expectedIs = this.getClass().getResourceAsStream(strippedJarName))
-        {
-            new ZipStripper(new File("target/reproducible-maven-plugin/" + this.getClass().getName()))
-                .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
-                .addFileStripper("META-INF/maven/org.test/test/pom.properties", new PomPropertiesStripper())
-                .strip(is, os);
-            final byte[] expected = new byte[expectedIs.available()];
-            expectedIs.read(expected);
-            Assert.assertArrayEquals(expected, os.toByteArray());
-        }
+        final File inFile = new File(this.getClass().getResource(testJarName).getFile());
+        final File outFile = File.createTempFile("test-jar", null);
+        outFile.deleteOnExit();
+        final File expected = new File(this.getClass().getResource(strippedJarName).getFile());
+        
+        new ZipStripper()
+            .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
+            .addFileStripper("META-INF/maven/org.test/test/pom.properties", new PomPropertiesStripper())
+            .strip(inFile, outFile);
+
+        Assert.assertArrayEquals(Files.readAllBytes(expected.toPath()), Files.readAllBytes(outFile.toPath()));
+        outFile.delete();
     }
 }

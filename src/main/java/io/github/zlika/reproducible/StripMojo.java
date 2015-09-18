@@ -15,8 +15,6 @@
 package io.github.zlika.reproducible;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -35,7 +33,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class StripMojo extends AbstractMojo
 {
     private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear" };
-    private static final String PLUGIN_TMP_FOLDER = "reproducible-maven-plugin";
     
     @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
     private File outputDirectory;
@@ -49,14 +46,10 @@ public class StripMojo extends AbstractMojo
             try
             {
                 final File tmp = File.createTempFile("reproducible", null, outputDirectory);
-                try (final FileInputStream zin = new FileInputStream(zip);
-                    final FileOutputStream zout = new FileOutputStream(tmp))
-                {
-                    new ZipStripper(getZipStripperTmpFolder(zip))
-                        .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
-                        .addFileStripper("META-INF/maven/org.test/test/pom.properties", new PomPropertiesStripper())
-                        .strip(zin, zout);
-                }
+                new ZipStripper()
+                    .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
+                    .addFileStripper("META-INF/maven/org.test/test/pom.properties", new PomPropertiesStripper())
+                    .strip(zip, tmp);
                 Files.move(tmp.toPath(), zip.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
             catch (IOException e)
@@ -70,15 +63,5 @@ public class StripMojo extends AbstractMojo
     {
         return folder.listFiles((dir, name) ->
                 Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith(ext)));
-    }
-    
-    private File getZipStripperTmpFolder(File zipFile)
-    {
-        return new File(new File(outputDirectory, PLUGIN_TMP_FOLDER), filenameWithoutExtension(zipFile.getName()));
-    }
-    
-    private String filenameWithoutExtension(String filename)
-    {
-        return filename.replaceFirst("[.][^.]+$", "");
     }
 }

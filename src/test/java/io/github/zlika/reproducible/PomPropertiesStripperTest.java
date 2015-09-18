@@ -14,9 +14,9 @@
 
 package io.github.zlika.reproducible;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,14 +33,15 @@ public class PomPropertiesStripperTest
     @Test
     public void testStripPom() throws IOException
     {
-        try (final InputStream is = this.getClass().getResourceAsStream("pom.properties");
-                final ByteArrayOutputStream os = new ByteArrayOutputStream();
-                final InputStream expectedIs = this.getClass().getResourceAsStream("pom-stripped.properties"))
-        {
-            new PomPropertiesStripper().strip(is, os);
-            final byte[] expected = new byte[expectedIs.available()];
-            expectedIs.read(expected);
-            Assert.assertArrayEquals(expected, os.toByteArray());
-        }
+        final File out = File.createTempFile("pom", null);
+        out.deleteOnExit();
+        
+        new PomPropertiesStripper().strip(new File(this.getClass().getResource("pom.properties").getFile()), out);
+        
+        final byte[] expected = Files.readAllBytes(new File(
+                                    this.getClass().getResource("pom-stripped.properties").getFile()).toPath());
+        final byte[] actual = Files.readAllBytes(out.toPath());
+        Assert.assertArrayEquals(expected, actual);
+        out.delete();
     }
 }

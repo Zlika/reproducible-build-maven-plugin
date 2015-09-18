@@ -1,2 +1,6 @@
 # Set the default behavior, in case people don't have core.autocrlf set
 * text=auto
+src/test/resources/io/github/zlika/reproducible/MANIFEST.MF eol=crlf
+src/test/resources/io/github/zlika/reproducible/MANIFEST-stripped.MF eol=crlf
+src/test/resources/io/github/zlika/reproducible/pom.properties eol=crlf
+src/test/resources/io/github/zlika/reproducible/pom-stripped.properties eol=crlf

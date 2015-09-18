@@ -14,26 +14,23 @@
 
 package io.github.zlika.reproducible;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileTime;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipExtraField;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 
 /**
  * Strips non-reproducible data from a ZIP file.
@@ -41,18 +38,7 @@ import java.util.zip.ZipOutputStream;
  */
 final class ZipStripper implements Stripper
 {
-    private static final int BUFFER_SIZE = 1024;
-    private final Map<File, Stripper> subFilters = new HashMap<>();
-    private final File tempFolder;
-    
-    /**
-     * Constructor.
-     * @param tempFolder the temporary folder to unzip the file.
-     */
-    public ZipStripper(File tempFolder)
-    {
-        this.tempFolder = tempFolder;
-    }
+    private final Map<String, Stripper> subFilters = new HashMap<>();
     
     /**
      * Adds a stripper for a given file in the Zip.
@@ -62,138 +48,71 @@ final class ZipStripper implements Stripper
      */
     public ZipStripper addFileStripper(String filename, Stripper stripper)
     {
-        subFilters.put(new File(tempFolder, filename), stripper);
+        subFilters.put(filename, stripper);
         return this;
     }
     
     @Override
-    public void strip(InputStream is, OutputStream os) throws IOException
+    public void strip(File in, File out) throws IOException
     {
-        try (ZipInputStream zis = new ZipInputStream(is))
+        try (final ZipFile zip = new ZipFile(in);
+             final ZipArchiveOutputStream zout = new ZipArchiveOutputStream(out))
         {
-            unzipToFolder(zis, tempFolder);
-        }
-        final List<String> sortedNames = sortFilesByName(tempFolder);
-        try (ZipOutputStream zos = new ZipOutputStream(os))
-        {
-            sortedNames.stream().forEach(name ->
-                {
-                    try
-                    {
-                        addFileToZip(name, zos);
-                    }
-                    catch (IOException e)
-                    {
-                        throw new UncheckedIOException(e);
-                    }
-                });
-        }
-    }
-    
-    private void addFileToZip(String name, ZipOutputStream zos) throws IOException
-    {
-        final File file = new File(tempFolder, name);
-        if (!file.isDirectory())
-        {
-            final ZipEntry strippedZe = new ZipEntry(name);
-            strippedZe.setTime(0);
-            zos.putNextEntry(strippedZe);
-            final Stripper fileStripper = subFilters.get(file);
-            try (FileInputStream fis = new FileInputStream(file))
+            final List<String> sortedNames = sortEntriesByName(zip.getEntries());
+            for (String name : sortedNames)
             {
-                if (fileStripper != null)
+                final ZipArchiveEntry entry = zip.getEntry(name);
+                // Strip Zip entry
+                final ZipArchiveEntry strippedEntry = filterZipEntry(entry);
+                // Strip file if required
+                final Stripper stripper = subFilters.get(name);
+                if (stripper != null)
                 {
-                    fileStripper.strip(fis, zos);
+                    // Unzip entry to temp file
+                    final File tmp = File.createTempFile("tmp", null);
+                    tmp.deleteOnExit();
+                    Files.copy(zip.getInputStream(entry), tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    final File tmp2 = File.createTempFile("tmp", null);
+                    tmp2.deleteOnExit();
+                    stripper.strip(tmp, tmp2);
+                    final byte[] fileContent = Files.readAllBytes(tmp2.toPath());
+                    strippedEntry.setSize(fileContent.length);
+                    zout.putArchiveEntry(strippedEntry);
+                    zout.write(fileContent);
+                    zout.closeArchiveEntry();
                 }
                 else
                 {
-                    copy(fis, zos);
+                    // Copy the Zip entry as-is
+                    zout.addRawArchiveEntry(strippedEntry, zip.getInputStream(entry));
                 }
             }
-            zos.closeEntry();
-        }
-        else
-        {
-            final ZipEntry strippedZe = new ZipEntry(name + "/");
-            strippedZe.setTime(0);
-            zos.putNextEntry(strippedZe);
         }
     }
     
-    private void unzipToFolder(ZipInputStream zis, File folder) throws IOException
+    private List<String> sortEntriesByName(Enumeration<ZipArchiveEntry> entries)
     {
-        deleteFolder(folder);
-        createFolders(folder);
-        ZipEntry ze;
-        while ((ze = zis.getNextEntry()) != null)
-        {
-            if (ze.isDirectory())
-            {
-                createFolders(new File(folder, ze.getName()));
-            }
-            else
-            {
-                final File file = new File(folder, ze.getName());
-                createFolders(file.getParentFile());
-                try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(file)))
-                {
-                    copy(zis, os);
-                }
-            }
-            zis.closeEntry();
-        }
-    }
-    
-    private void deleteFolder(File folder) throws IOException
-    {
-        if (folder.exists())
-        {
-            Files.walkFileTree(folder.toPath(), new SimpleFileVisitor<Path>()
-            {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
-                {
-                    Files.delete(file);
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
-                {
-                    Files.delete(dir);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        }
-    }
-    
-    private List<String> sortFilesByName(File folder) throws IOException
-    {
-        return Files.walk(folder.toPath())
-                .map(f -> folder.toPath().relativize(f).toString())
-                .filter(s -> !s.isEmpty())
+        return Collections.list(entries).stream()
+                .map(e -> e.getName())
                 .sorted()
                 .collect(Collectors.toList());
     }
     
-    private void createFolders(File folder) throws IOException
+    private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
-        if (!folder.exists() && !folder.mkdirs())
+        // Set times
+        entry.setCreationTime(FileTime.fromMillis(0));
+        entry.setLastAccessTime(FileTime.fromMillis(0));
+        entry.setLastModifiedTime(FileTime.fromMillis(0));
+        entry.setTime(0);
+        // Remove extended timestamps
+        for (ZipExtraField field : entry.getExtraFields())
         {
-            throw new IOException("Cannot create folder " + folder.getAbsolutePath());
-        }
-    }
-
-    private void copy(InputStream is, OutputStream os) throws IOException
-    {
-        final byte[] buffer = new byte[BUFFER_SIZE];
-        while (is.available() > 0)
-        {
-            int read = is.read(buffer);
-            if (read > 0)
+            if (field instanceof X5455_ExtendedTimestamp)
             {
-                os.write(buffer, 0, read);
+                entry.removeExtraField(field.getHeaderId());
             }
         }
+        return entry;
     }
 }

@@ -16,12 +16,10 @@ package io.github.zlika.reproducible;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Strips non-reproducible data from MANIFEST files.
@@ -35,27 +33,28 @@ import java.nio.charset.StandardCharsets;
 final class ManifestStripper implements Stripper
 {
     @Override
-    public void strip(InputStream is, OutputStream os) throws IOException
+    public void strip(File in, File out) throws IOException
     {
-        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-        reader.lines().filter(s -> !s.contains("Built-By"))
-                        .filter(s -> !s.contains("Created-By"))
-                        .filter(s -> !s.contains("Build-Jdk"))
-                        .filter(s -> !s.contains("Build-Date"))
-                        .filter(s -> !s.contains("Build-Time"))
-                        .filter(s -> !s.contains("Bnd-LastModified"))
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(out));
+             final BufferedReader reader = new BufferedReader(new FileReader(in)))
+        {
+            reader.lines().filter(s -> !s.startsWith("Built-By"))
+                        .filter(s -> !s.startsWith("Created-By"))
+                        .filter(s -> !s.startsWith("Build-Jdk"))
+                        .filter(s -> !s.startsWith("Build-Date"))
+                        .filter(s -> !s.startsWith("Build-Time"))
+                        .filter(s -> !s.startsWith("Bnd-LastModified"))
                         .forEach(s -> 
                         {
                             try
                             {
                                 writer.write(s);
-                                writer.newLine();
+                                writer.write("\r\n");
                             }
                             catch (IOException e)
                             {
                             }
                         });
-        writer.flush();
+        }
     }
 }

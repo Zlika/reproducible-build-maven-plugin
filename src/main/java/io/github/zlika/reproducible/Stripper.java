@@ -14,9 +14,8 @@
 
 package io.github.zlika.reproducible;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Generic interface for stripping non-reproducible data.
@@ -25,9 +24,9 @@ interface Stripper
 {
     /**
      * Strips non-reproducible data.
-     * @param is the input stream.
-     * @param os the stripped output stream.
+     * @param in the input file.
+     * @param out the stripped output file.
      * @throws IOException if an I/O error occurs.
      */
-    void strip(InputStream is, OutputStream os) throws IOException;
+    void strip(File in, File out) throws IOException;
 }
