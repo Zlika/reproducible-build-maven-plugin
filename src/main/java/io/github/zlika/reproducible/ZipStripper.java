@@ -16,6 +16,9 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
@@ -84,9 +87,25 @@ final class ZipStripper implements Stripper
                 else
                 {
                     // Copy the Zip entry as-is
-                    zout.addRawArchiveEntry(strippedEntry, zip.getInputStream(entry));
+                    zout.addRawArchiveEntry(strippedEntry, getRawInputStream(zip, entry));
                 }
             }
+        }
+    }
+    
+    private InputStream getRawInputStream(ZipFile zip, ZipArchiveEntry ze) throws IOException
+    {
+        try
+        {
+            // Call ZipFile.getRawInputStream(ZipArchiveEntry) by reflection
+            // because it is a private method but we need it!
+            final Method method = zip.getClass().getDeclaredMethod("getRawInputStream", ZipArchiveEntry.class);
+            method.setAccessible(true);
+            return (InputStream) method.invoke(zip, ze);
+        }
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+        {
+            throw new IOException(e);
         }
     }
     
