@@ -43,7 +43,7 @@ public class ZipStripperTest
         
         new ZipStripper()
             .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
-            .addFileStripper("META-INF/maven/org.test/test/pom.properties", new PomPropertiesStripper())
+            .addFileStripper("META-INF/\\S*/pom.properties", new PomPropertiesStripper())
             .strip(inFile, outFile);
 
         Assert.assertArrayEquals(Files.readAllBytes(expected.toPath()), Files.readAllBytes(outFile.toPath()));

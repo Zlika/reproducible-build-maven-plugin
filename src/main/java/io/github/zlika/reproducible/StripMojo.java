@@ -48,7 +48,7 @@ public class StripMojo extends AbstractMojo
                 final File tmp = File.createTempFile("reproducible", null, outputDirectory);
                 new ZipStripper()
                     .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
-                    .addFileStripper("META-INF/maven/org.test/test/pom.properties", new PomPropertiesStripper())
+                    .addFileStripper("META-INF/maven/\\S*/pom.properties", new PomPropertiesStripper())
                     .strip(zip, tmp);
                 Files.move(tmp.toPath(), zip.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }

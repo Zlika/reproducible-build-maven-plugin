@@ -27,6 +27,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp;
@@ -45,7 +46,7 @@ final class ZipStripper implements Stripper
     
     /**
      * Adds a stripper for a given file in the Zip.
-     * @param filename the name of the file in the Zip.
+     * @param filename the name of the file in the Zip (regular expression).
      * @param stripper the stripper to apply on the file.
      * @return this object (for method chaining).
      */
@@ -68,7 +69,7 @@ final class ZipStripper implements Stripper
                 // Strip Zip entry
                 final ZipArchiveEntry strippedEntry = filterZipEntry(entry);
                 // Strip file if required
-                final Stripper stripper = subFilters.get(name);
+                final Stripper stripper = getSubFilter(name);
                 if (stripper != null)
                 {
                     // Unzip entry to temp file
@@ -91,6 +92,18 @@ final class ZipStripper implements Stripper
                 }
             }
         }
+    }
+    
+    private Stripper getSubFilter(String name)
+    {
+        for (Entry<String, Stripper> filter : subFilters.entrySet())
+        {
+            if (name.matches(filter.getKey()))
+            {
+                return filter.getValue();
+            }
+        }
+        return null;
     }
     
     private InputStream getRawInputStream(ZipFile zip, ZipArchiveEntry ze) throws IOException

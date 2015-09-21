@@ -31,4 +31,19 @@
       </plugin>
     </plugins>
   </build>
+  
+  <profiles>
+    <profile>
+      <id>build1</id>
+      <build>
+        <directory>target1</directory>
+      </build>
+    </profile>
+    <profile>
+      <id>build2</id>
+      <build>
+        <directory>target2</directory>
+      </build>
+    </profile>
+  </profiles>
 </project>
