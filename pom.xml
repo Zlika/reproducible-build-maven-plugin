@@ -27,7 +27,7 @@
   </scm>
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>http://github.com/Zlika/reproducible-build-maven-plugin/issues</url>
+    <url>https://github.com/Zlika/reproducible-build-maven-plugin/issues</url>
   </issueManagement>
   <distributionManagement>
     <site>
@@ -192,12 +192,6 @@
           <effort>max</effort>
           <threshold>Default</threshold>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven-javadoc-plugin.version}</version>
       </plugin>
 
       <plugin>
