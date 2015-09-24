@@ -17,9 +17,12 @@ package io.github.zlika.reproducible;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Strips non-reproducible data from Maven pom properties files.
@@ -30,8 +33,10 @@ final class PomPropertiesStripper implements Stripper
     @Override
     public void strip(File in, File out) throws IOException
     {
-        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(out));
-        final BufferedReader reader = new BufferedReader(new FileReader(in)))
+        try (final BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(out), StandardCharsets.UTF_8));
+         final BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(in), StandardCharsets.UTF_8)))
         {
             reader.lines().filter(s -> !s.startsWith("#"))
                         .forEach(s -> 
