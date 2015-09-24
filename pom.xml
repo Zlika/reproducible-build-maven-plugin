@@ -62,6 +62,7 @@
     
     <!-- Dependency versions -->
     <commons-compress.version>1.10</commons-compress.version>
+    <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
     <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
     <maven-plugin-api.version>3.3.3</maven-plugin-api.version>
@@ -94,6 +95,12 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <version>${commons-compress.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
     </dependency>
     
     <dependency>

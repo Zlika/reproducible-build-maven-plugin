@@ -34,8 +34,19 @@ public class StripMojo extends AbstractMojo
 {
     private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear" };
     
-    @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
+    /**
+     * Directory where to find zip/jar/war/ear files for stripping.
+     */
+    @Parameter(defaultValue = "${project.build.directory}", required = true)
     private File outputDirectory;
+    
+    /**
+     * By default, the stripping is done in-place.
+     * To create new files without changing the original ones, set this parameter to "false".
+     * The new files are named by appending "-stripped" to the original file name.
+     */
+    @Parameter(defaultValue = "true", property = "reproducible.overwrite")
+    private boolean overwrite;
 
     public void execute() throws MojoExecutionException
     {
@@ -45,12 +56,15 @@ public class StripMojo extends AbstractMojo
             getLog().info("Stripping " + zip.getAbsolutePath());
             try
             {
-                final File tmp = File.createTempFile("reproducible", null, outputDirectory);
+                final File stripped = createStrippedFilename(zip);
                 new ZipStripper()
                     .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
                     .addFileStripper("META-INF/maven/\\S*/pom.properties", new PomPropertiesStripper())
-                    .strip(zip, tmp);
-                Files.move(tmp.toPath(), zip.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    .strip(zip, stripped);
+                if (overwrite)
+                {
+                    Files.move(stripped.toPath(), zip.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
             }
             catch (IOException e)
             {
@@ -63,5 +77,14 @@ public class StripMojo extends AbstractMojo
     {
         return folder.listFiles((dir, name) ->
                 Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith(ext)));
+    }
+    
+    private File createStrippedFilename(File originalFile)
+    {
+        final String originalName = originalFile.getName();
+        final String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(originalName);
+        final String ext = com.google.common.io.Files.getFileExtension(originalName);
+        return new File(originalFile.getParentFile(), filenameWithoutExt + "-stripped"
+                                                        + (ext.isEmpty() ? "" : ".") + ext);
     }
 }
