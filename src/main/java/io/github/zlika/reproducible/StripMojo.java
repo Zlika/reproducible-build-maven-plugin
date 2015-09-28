@@ -81,9 +81,8 @@ public class StripMojo extends AbstractMojo
     
     private File createStrippedFilename(File originalFile)
     {
-        final String originalName = originalFile.getName();
-        final String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(originalName);
-        final String ext = com.google.common.io.Files.getFileExtension(originalName);
+        final String filenameWithoutExt = FileUtils.getNameWithoutExtension(originalFile);
+        final String ext = FileUtils.getFileExtension(originalFile);
         return new File(originalFile.getParentFile(), filenameWithoutExt + "-stripped"
                                                         + (ext.isEmpty() ? "" : ".") + ext);
     }
