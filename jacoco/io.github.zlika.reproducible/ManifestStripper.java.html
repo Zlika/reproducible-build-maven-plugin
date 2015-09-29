@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ManifestStripper.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Reproducible Build Maven Plugin</a> &gt; <a href="index.source.html" class="el_package">io.github.zlika.reproducible</a> &gt; <span class="el_source">ManifestStripper.java</span></div><h1>ManifestStripper.java</h1><pre class="source lang-java linenums">/*
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.github.zlika.reproducible;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * Strips non-reproducible data from MANIFEST files.
+ * This stripper removes the following lines from the manifest:
+ * - Built-By
+ * - Created-By
+ * - Build-Jdk
+ * - Build-Date / Build-Time
+ * - Bnd-LastModified
+ */
+<span class="fc" id="L36">final class ManifestStripper implements Stripper</span>
+{
+    @Override
+    public void strip(File in, File out) throws IOException
+    {
+<span class="pc" id="L41">        try (final BufferedWriter writer = new BufferedWriter(</span>
+                    new OutputStreamWriter(new FileOutputStream(out), StandardCharsets.UTF_8));
+<span class="fc" id="L43">             final BufferedReader reader = new BufferedReader(</span>
+                    new InputStreamReader(new FileInputStream(in), StandardCharsets.UTF_8)))
+        {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            reader.lines().filter(s -&gt; !s.startsWith(&quot;Built-By&quot;))</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                        .filter(s -&gt; !s.startsWith(&quot;Created-By&quot;))</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">                        .filter(s -&gt; !s.startsWith(&quot;Build-Jdk&quot;))</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">                        .filter(s -&gt; !s.startsWith(&quot;Build-Date&quot;))</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">                        .filter(s -&gt; !s.startsWith(&quot;Build-Time&quot;))</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">                        .filter(s -&gt; !s.startsWith(&quot;Bnd-LastModified&quot;))</span>
+<span class="fc" id="L52">                        .forEach(s -&gt; </span>
+                        {
+                            try
+                            {
+<span class="fc" id="L56">                                writer.write(s);</span>
+<span class="fc" id="L57">                                writer.write(&quot;\r\n&quot;);</span>
+                            }
+<span class="nc" id="L59">                            catch (IOException e)</span>
+                            {
+<span class="fc" id="L61">                            }</span>
+<span class="fc" id="L62">                        });</span>
+<span class="pc bpc" id="L63" title="12 of 16 branches missed.">        }</span>
+<span class="fc" id="L64">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

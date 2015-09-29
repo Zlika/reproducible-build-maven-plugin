@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ZipStripper.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Reproducible Build Maven Plugin</a> &gt; <a href="index.source.html" class="el_package">io.github.zlika.reproducible</a> &gt; <span class="el_source">ZipStripper.java</span></div><h1>ZipStripper.java</h1><pre class="source lang-java linenums">/*
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.github.zlika.reproducible;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileTime;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipExtraField;
+import org.apache.commons.compress.archivers.zip.ZipFile;
+
+/**
+ * Strips non-reproducible data from a ZIP file.
+ * It rebuilds the ZIP file with a predictable order for the zip entries and sets zip entry dates to a fixed value.
+ */
+<span class="fc" id="L43">final class ZipStripper implements Stripper</span>
+{
+<span class="fc" id="L45">    private final Map&lt;String, Stripper&gt; subFilters = new HashMap&lt;&gt;();</span>
+    
+    /**
+     * Adds a stripper for a given file in the Zip.
+     * @param filename the name of the file in the Zip (regular expression).
+     * @param stripper the stripper to apply on the file.
+     * @return this object (for method chaining).
+     */
+    public ZipStripper addFileStripper(String filename, Stripper stripper)
+    {
+<span class="fc" id="L55">        subFilters.put(filename, stripper);</span>
+<span class="fc" id="L56">        return this;</span>
+    }
+    
+    @Override
+    public void strip(File in, File out) throws IOException
+    {
+<span class="pc" id="L62">        try (final ZipFile zip = new ZipFile(in);</span>
+<span class="fc" id="L63">             final ZipArchiveOutputStream zout = new ZipArchiveOutputStream(out))</span>
+        {
+<span class="fc" id="L65">            final List&lt;String&gt; sortedNames = sortEntriesByName(zip.getEntries());</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            for (String name : sortedNames)</span>
+            {
+<span class="fc" id="L68">                final ZipArchiveEntry entry = zip.getEntry(name);</span>
+                // Strip Zip entry
+<span class="fc" id="L70">                final ZipArchiveEntry strippedEntry = filterZipEntry(entry);</span>
+                // Strip file if required
+<span class="fc" id="L72">                final Stripper stripper = getSubFilter(name);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">                if (stripper != null)</span>
+                {
+                    // Unzip entry to temp file
+<span class="fc" id="L76">                    final File tmp = File.createTempFile(&quot;tmp&quot;, null);</span>
+<span class="fc" id="L77">                    tmp.deleteOnExit();</span>
+<span class="fc" id="L78">                    Files.copy(zip.getInputStream(entry), tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);</span>
+<span class="fc" id="L79">                    final File tmp2 = File.createTempFile(&quot;tmp&quot;, null);</span>
+<span class="fc" id="L80">                    tmp2.deleteOnExit();</span>
+<span class="fc" id="L81">                    stripper.strip(tmp, tmp2);</span>
+<span class="fc" id="L82">                    final byte[] fileContent = Files.readAllBytes(tmp2.toPath());</span>
+<span class="fc" id="L83">                    strippedEntry.setSize(fileContent.length);</span>
+<span class="fc" id="L84">                    zout.putArchiveEntry(strippedEntry);</span>
+<span class="fc" id="L85">                    zout.write(fileContent);</span>
+<span class="fc" id="L86">                    zout.closeArchiveEntry();</span>
+<span class="fc" id="L87">                }</span>
+                else
+                {
+                    // Copy the Zip entry as-is
+<span class="fc" id="L91">                    zout.addRawArchiveEntry(strippedEntry, getRawInputStream(zip, entry));</span>
+                }
+<span class="fc" id="L93">            }</span>
+<span class="pc bpc" id="L94" title="12 of 16 branches missed.">        }</span>
+<span class="fc" id="L95">    }</span>
+    
+    private Stripper getSubFilter(String name)
+    {
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (Entry&lt;String, Stripper&gt; filter : subFilters.entrySet())</span>
+        {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">            if (name.matches(filter.getKey()))</span>
+            {
+<span class="fc" id="L103">                return filter.getValue();</span>
+            }
+<span class="fc" id="L105">        }</span>
+<span class="fc" id="L106">        return null;</span>
+    }
+    
+    private InputStream getRawInputStream(ZipFile zip, ZipArchiveEntry ze) throws IOException
+    {
+        try
+        {
+            // Call ZipFile.getRawInputStream(ZipArchiveEntry) by reflection
+            // because it is a private method but we need it!
+<span class="fc" id="L115">            final Method method = zip.getClass().getDeclaredMethod(&quot;getRawInputStream&quot;, ZipArchiveEntry.class);</span>
+<span class="fc" id="L116">            method.setAccessible(true);</span>
+<span class="fc" id="L117">            return (InputStream) method.invoke(zip, ze);</span>
+        }
+<span class="nc" id="L119">        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)</span>
+        {
+<span class="nc" id="L121">            throw new IOException(e);</span>
+        }
+    }
+    
+    private List&lt;String&gt; sortEntriesByName(Enumeration&lt;ZipArchiveEntry&gt; entries)
+    {
+<span class="fc" id="L127">        return Collections.list(entries).stream()</span>
+<span class="fc" id="L128">                .map(e -&gt; e.getName())</span>
+<span class="fc" id="L129">                .sorted()</span>
+<span class="fc" id="L130">                .collect(Collectors.toList());</span>
+    }
+    
+    private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
+    {
+        // Set times
+<span class="fc" id="L136">        entry.setCreationTime(FileTime.fromMillis(0));</span>
+<span class="fc" id="L137">        entry.setLastAccessTime(FileTime.fromMillis(0));</span>
+<span class="fc" id="L138">        entry.setLastModifiedTime(FileTime.fromMillis(0));</span>
+<span class="fc" id="L139">        entry.setTime(0);</span>
+        // Remove extended timestamps
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">        for (ZipExtraField field : entry.getExtraFields())</span>
+        {
+<span class="nc bnc" id="L143" title="All 2 branches missed.">            if (field instanceof X5455_ExtendedTimestamp)</span>
+            {
+<span class="nc" id="L145">                entry.removeExtraField(field.getHeaderId());</span>
+            }
+        }
+<span class="fc" id="L148">        return entry;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
