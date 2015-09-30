@@ -9,10 +9,11 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
   <groupId>io.github.zlika.it</groupId>
-  <artifactId>no-overwrite</artifactId>
+  <artifactId>no-target</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-  <description>Do not overwrite original file</description>
+  <description>Checks that no NPE occurs if there is no target folder</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

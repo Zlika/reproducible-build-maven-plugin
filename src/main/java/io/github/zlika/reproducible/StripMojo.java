@@ -75,8 +75,9 @@ public class StripMojo extends AbstractMojo
     
     private File[] findZipFiles(File folder)
     {
-        return folder.listFiles((dir, name) ->
+        final File[] zipFiles = folder.listFiles((dir, name) ->
                 Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith(ext)));
+        return zipFiles != null ? zipFiles : new File[0];
     }
     
     private File createStrippedFilename(File originalFile)
