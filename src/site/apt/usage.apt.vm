@@ -5,12 +5,12 @@
 
 Usage
 
- The following examples describe the basic usage of the Reproducible Maven plugin.
+ The following examples describe the basic usage of the Reproducible Build Maven plugin.
 
 * Fix build artifacts to make them reproducible
 
   To execute the plugin during the packaging phase, add the
-  Reproducible Maven plugin in the <<<\<build\>>>> section
+  Reproducible Build Maven plugin in the <<<\<build\>>>> section
   of your <<<pom.xml>>>.
 
 +-----+
@@ -20,7 +20,7 @@ Usage
     <plugins>
       <plugin>
         <groupId>io.github.zlika</groupId>
-        <artifactId>reproducible-maven-plugin</artifactId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
         <version>${project.version}</version>
         <executions>
           <execution>

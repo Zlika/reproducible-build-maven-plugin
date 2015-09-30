@@ -3,12 +3,12 @@
   xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
   id="FAQ" title="Frequently Asked Questions">
  <part id="General">
-   <faq id="Build no reproducible">
+   <faq id="Build not reproducible">
      <question>I use the plugin, but my build is not reproducible!</question>
      <answer>
        <p>
        Be sure that you compile your project on a given OS/architecture and with a given compiler version.
-       Also ensure that all your dependencies have an imposed version (user maven-enforcer-plugin for that).
+       Also ensure that all your dependencies have an imposed version (use maven-enforcer-plugin for that).
       </p>
       <p>
        If you find other interesting sources of "non reproducible" data that this plugin could remove, please open a ticket in the bug tracker or send a pull request.
