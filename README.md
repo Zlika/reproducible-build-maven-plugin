@@ -3,7 +3,7 @@ reproducible-build-maven-plugin
 
 [![Build Status](https://travis-ci.org/Zlika/reproducible-build-maven-plugin.svg?branch=master)](https://travis-ci.org/Zlika/reproducible-build-maven-plugin)
 [![Coverage Status](https://coveralls.io/repos/Zlika/reproducible-build-maven-plugin/badge.svg?branch=master&service=github)](https://coveralls.io/github/Zlika/reproducible-build-maven-plugin?branch=master)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.zlika.reproducible/reproducible-build-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.zlika.reproducible/reproducible-build-maven-plugin)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.zlika/reproducible-build-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.zlika/reproducible-build-maven-plugin)
 
 A Maven plugin to make your build byte-for-byte reproducible.
 Cf. http://zlika.github.io/reproducible-build-maven-plugin/
