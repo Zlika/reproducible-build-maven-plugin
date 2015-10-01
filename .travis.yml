@@ -1,6 +1,12 @@
 language: java
-script: mvn clean install -Prun-its
+
 jdk:
   - oraclejdk8
+
 os:
   - linux
+
+script: mvn clean install -Prun-its
+
+after_success:
+  - mvn jacoco:report coveralls:report

@@ -7,7 +7,7 @@
   <packaging>maven-plugin</packaging>
 
   <name>Reproducible Build Maven Plugin</name>
-  <description>This Plug-In allows to generate byte-for-byte reproducible artefacts</description>
+  <description>This Plug-In allows to generate byte-for-byte reproducible artifacts</description>
   <url>http://zlika.github.io/reproducible-build-maven-plugin</url>
   
   <inceptionYear>2015</inceptionYear>
@@ -59,6 +59,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
     <!-- Maven plugin versions -->
+    <coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
     <findbugs-maven-plugin.version>3.0.2</findbugs-maven-plugin.version>
     <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
     <maven-clean-plugin.version>2.6.1</maven-clean-plugin.version>
@@ -213,12 +214,24 @@
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco-maven-plugin.version}</version>
+          <configuration>
+            <excludes><exclude>**/*HelpMojo.*</exclude></excludes>
+          </configuration>
         </plugin>
         
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <version>${maven-site-plugin.version}</version>
+        </plugin>
+        
+        <plugin>
+          <groupId>org.eluder.coveralls</groupId>
+          <artifactId>coveralls-maven-plugin</artifactId>
+          <version>${coveralls-maven-plugin.version}</version>
+          <configuration>
+            <repoToken>${env.coveralls}</repoToken>
+          </configuration>
         </plugin>
 
       </plugins>
