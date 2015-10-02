@@ -1,6 +1,8 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Reproducible Build Maven Plugin,io.github.zlika.reproducible,StripMojo,17,135,1,5,2,20,1,9,0,7
+Reproducible Build Maven Plugin,io.github.zlika.reproducible,StripMojo,17,142,1,7,2,21,1,10,0,7
 Reproducible Build Maven Plugin,io.github.zlika.reproducible,FileUtils,3,33,0,4,2,6,1,4,1,2
+Reproducible Build Maven Plugin,io.github.zlika.reproducible,FixXjcMojo,38,69,0,0,6,17,0,6,0,6
 Reproducible Build Maven Plugin,io.github.zlika.reproducible,ManifestStripper,64,116,15,13,1,16,11,12,0,9
+Reproducible Build Maven Plugin,io.github.zlika.reproducible,XjcObjectFactoryFixer,0,152,1,7,0,28,1,9,0,6
 Reproducible Build Maven Plugin,io.github.zlika.reproducible,PomPropertiesStripper,61,69,12,6,1,11,8,5,0,4
 Reproducible Build Maven Plugin,io.github.zlika.reproducible,ZipStripper,79,223,15,13,4,46,10,12,0,8
