@@ -29,7 +29,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * Fix the produced artifacts to make the build reproducible.
  */
-@Mojo(name = "strip", defaultPhase = LifecyclePhase.PACKAGE)
+@Mojo(name = "strip", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class StripMojo extends AbstractMojo
 {
     private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear" };

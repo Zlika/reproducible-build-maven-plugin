@@ -27,7 +27,6 @@
         <executions>
           <execution>
             <id>stripping</id>
-            <phase>package</phase>
             <goals>
               <goal>strip</goal>
             </goals>

@@ -14,7 +14,7 @@ Reproducible Build Maven Plugin
  
  This Maven plugin tries to strip "non reproducible" data from the generated artifacts. It follows the same goals as {{{https://wiki.debian.org/ReproducibleBuilds}Debian's Reproducible Builds project}} but at the modest scale of a Maven project.
  
- Using this plugin is a no-brainer: simply add it to your pom and bind the "strip" goal to the "package" phase, and it will try to "automagically" make the build byte-for-byte reproducible.
+ Using this plugin is a no-brainer: simply add it to your pom and it will try to "automagically" make the build byte-for-byte reproducible.
  
  Currently, the plugin processes all the ZIP/JAR/WAR/EAR files found in the target repository and does the following things:
  

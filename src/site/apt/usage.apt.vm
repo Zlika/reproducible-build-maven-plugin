@@ -9,9 +9,8 @@ Usage
 
 * Fix build artifacts to make them reproducible
 
-  To execute the plugin during the packaging phase, add the
-  Reproducible Build Maven plugin in the <<<\<build\>>>> section
-  of your <<<pom.xml>>>.
+  To execute the plugin during the pre-integration-test phase (just after the package phase),
+  add the Reproducible Build Maven plugin in the <<<\<build\>>>> section of your <<<pom.xml>>>.
 
 +-----+
 <project>
@@ -24,7 +23,6 @@ Usage
         <version>${project.version}</version>
         <executions>
           <execution>
-            <phase>package</phase>
             <goals>
               <goal>strip</goal>
             </goals>
