@@ -47,8 +47,26 @@ public final class StripMojo extends AbstractMojo
      */
     @Parameter(defaultValue = "true", property = "reproducible.overwrite")
     private boolean overwrite;
+    
+    /**
+     * If true, skips the execution of the goal.
+     */
+    @Parameter(defaultValue = "false", property = "reproducible.skip")
+    private boolean skip;
 
     public void execute() throws MojoExecutionException
+    {
+        if (skip)
+        {
+            getLog().info("Skipping execution of goal \"strip\"");
+        }
+        else
+        {
+            strip();
+        }
+    }
+    
+    private void strip() throws MojoExecutionException
     {
         final File[] zipFiles = findZipFiles(outputDirectory);
         for (File zip : zipFiles)
