@@ -3,6 +3,7 @@ Next Release (0.2)
 Bug Fixes
 ---------
 * Fix NPE if target folder does not exist.
+
 Features
 --------
 * New fix-xjc goal to normalize ObjectFactory.java files produced by JAXB/xjc.
