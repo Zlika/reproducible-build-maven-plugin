@@ -24,7 +24,7 @@ Usage
         <executions>
           <execution>
             <goals>
-              <goal>strip</goal>
+              <goal>strip-jar</goal>
             </goals>
           </execution>
         </executions>

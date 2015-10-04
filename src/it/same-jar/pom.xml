@@ -28,7 +28,7 @@
           <execution>
             <id>stripping</id>
             <goals>
-              <goal>strip</goal>
+              <goal>strip-jar</goal>
             </goals>
           </execution>
           </executions>
