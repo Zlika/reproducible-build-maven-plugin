@@ -28,7 +28,7 @@
           <execution>
             <id>fix</id>
             <goals>
-              <goal>fix-xjc</goal>
+              <goal>strip-jaxb</goal>
             </goals>
             <configuration>
               <skip>true</skip>

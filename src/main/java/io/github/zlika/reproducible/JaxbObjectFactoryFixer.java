@@ -28,7 +28,7 @@ import java.util.List;
  * are put in a non-predictable order (cf.https://java.net/jira/browse/JAXB-598).
  * This class sorts the methods so that the ObjectFactory.java file produced is always the same.
  */
-final class XjcObjectFactoryFixer implements Stripper
+final class JaxbObjectFactoryFixer implements Stripper
 {
     private static final String END_OF_METHOD = "    }";
     private final Charset charset;
@@ -37,7 +37,7 @@ final class XjcObjectFactoryFixer implements Stripper
      * Constructor.
      * @param charset the charset of the Java files to be processed.
      */
-    public XjcObjectFactoryFixer(Charset charset)
+    public JaxbObjectFactoryFixer(Charset charset)
     {
         this.charset = charset;
     }

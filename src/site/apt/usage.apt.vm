@@ -52,7 +52,7 @@ Usage
         <executions>
           <execution>
             <goals>
-              <goal>fix-xjc</goal>
+              <goal>strip-jaxb</goal>
             </goals>
           </execution>
         </executions>
