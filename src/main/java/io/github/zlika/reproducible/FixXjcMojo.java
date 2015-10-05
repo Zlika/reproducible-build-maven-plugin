@@ -68,6 +68,10 @@ public final class FixXjcMojo extends AbstractMojo
     
     private void fix() throws MojoExecutionException
     {
+        if (!generatedDirectory.exists() || !generatedDirectory.isDirectory())
+        {
+            return;
+        }
         final Charset charset = Charset.forName(encoding);
         final XjcObjectFactoryFixer fixer = new XjcObjectFactoryFixer(charset);
         final File tmpFile = createTempFile();
