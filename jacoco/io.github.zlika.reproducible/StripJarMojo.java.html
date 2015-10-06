@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>StripJarMojo.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Reproducible Build Maven Plugin</a> &gt; <a href="index.source.html" class="el_package">io.github.zlika.reproducible</a> &gt; <span class="el_source">StripJarMojo.java</span></div><h1>StripJarMojo.java</h1><pre class="source lang-java linenums">/*
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.github.zlika.reproducible;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+/**
+ * Fixes the produced artifacts (ZIP/JAR/WAR/EAR) to make the build reproducible.
+ */
+@Mojo(name = &quot;strip-jar&quot;, defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
+<span class="fc" id="L33">public final class StripJarMojo extends AbstractMojo</span>
+{
+<span class="fc" id="L35">    private static final String[] ZIP_EXT = { &quot;zip&quot;, &quot;jar&quot;, &quot;war&quot;, &quot;ear&quot; };</span>
+    
+    /**
+     * Directory where to find zip/jar/war/ear files for stripping.
+     */
+    @Parameter(defaultValue = &quot;${project.build.directory}&quot;, required = true)
+    private File outputDirectory;
+    
+    /**
+     * By default, the stripping is done in-place.
+     * To create new files without changing the original ones, set this parameter to &quot;false&quot;.
+     * The new files are named by appending &quot;-stripped&quot; to the original file name.
+     */
+    @Parameter(defaultValue = &quot;true&quot;, property = &quot;reproducible.overwrite&quot;)
+    private boolean overwrite;
+    
+    /**
+     * If true, skips the execution of the goal.
+     */
+    @Parameter(defaultValue = &quot;false&quot;, property = &quot;reproducible.skip&quot;)
+    private boolean skip;
+
+    public void execute() throws MojoExecutionException
+    {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (skip)</span>
+        {
+<span class="fc" id="L61">            getLog().info(&quot;Skipping execution of goal \&quot;strip\&quot;&quot;);</span>
+        }
+        else
+        {
+<span class="fc" id="L65">            strip();</span>
+        }
+<span class="fc" id="L67">    }</span>
+    
+    private void strip() throws MojoExecutionException
+    {
+<span class="fc" id="L71">        final File[] zipFiles = findZipFiles(outputDirectory);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        for (File zip : zipFiles)</span>
+        {
+<span class="fc" id="L74">            getLog().info(&quot;Stripping &quot; + zip.getAbsolutePath());</span>
+            try
+            {
+<span class="fc" id="L77">                final File stripped = createStrippedFilename(zip);</span>
+<span class="fc" id="L78">                new ZipStripper()</span>
+<span class="fc" id="L79">                    .addFileStripper(&quot;META-INF/MANIFEST.MF&quot;, new ManifestStripper())</span>
+<span class="fc" id="L80">                    .addFileStripper(&quot;META-INF/maven/\\S*/pom.properties&quot;, new PomPropertiesStripper())</span>
+<span class="fc" id="L81">                    .strip(zip, stripped);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">                if (overwrite)</span>
+                {
+<span class="fc" id="L84">                    Files.move(stripped.toPath(), zip.toPath(), StandardCopyOption.REPLACE_EXISTING);</span>
+                }
+            }
+<span class="nc" id="L87">            catch (IOException e)</span>
+            {
+<span class="nc" id="L89">                throw new MojoExecutionException(&quot;Error when stripping &quot; + zip.getAbsolutePath(), e);</span>
+<span class="fc" id="L90">            }</span>
+        }
+<span class="fc" id="L92">    }</span>
+    
+    private File[] findZipFiles(File folder)
+    {
+<span class="fc" id="L96">        final File[] zipFiles = folder.listFiles((dir, name) -&gt;</span>
+<span class="fc" id="L97">                Arrays.stream(ZIP_EXT).anyMatch(ext -&gt; name.toLowerCase().endsWith(ext)));</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        return zipFiles != null ? zipFiles : new File[0];</span>
+    }
+    
+    private File createStrippedFilename(File originalFile)
+    {
+<span class="fc" id="L103">        final String filenameWithoutExt = FileUtils.getNameWithoutExtension(originalFile);</span>
+<span class="fc" id="L104">        final String ext = FileUtils.getFileExtension(originalFile);</span>
+<span class="fc" id="L105">        return new File(originalFile.getParentFile(), filenameWithoutExt + &quot;-stripped&quot;</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">                                                        + (ext.isEmpty() ? &quot;&quot; : &quot;.&quot;) + ext);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
