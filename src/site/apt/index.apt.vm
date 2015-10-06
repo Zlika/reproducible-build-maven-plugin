@@ -4,17 +4,17 @@
  ------
  ------
 
-
-
-Reproducible Build Maven Plugin
-
-*Please Note - This is a work in progress. This plugin requires Java 8 runtime.
+${project.name}
   
  Have you ever tried to compile twice the same sources with Maven and compared the hashes of the generated artifacts? They are not the same! Maven is not able to build an artifact in a real reproducible (i.e. byte-for-byte) way.
  
  This Maven plugin tries to strip "non reproducible" data from the generated artifacts. It follows the same goals as {{{https://wiki.debian.org/ReproducibleBuilds}Debian's Reproducible Builds project}} but at the modest scale of a Maven project.
  
  Using this plugin is a no-brainer: simply add it to your pom and it will try to "automagically" make the build byte-for-byte reproducible.
+ 
+ <<NOTE:>> <This plugin requires a Java 8 runtime.>
+ 
+* Goals Overview
  
  There are several goals:
  
