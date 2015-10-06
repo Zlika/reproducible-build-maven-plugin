@@ -87,7 +87,7 @@ final class JaxbObjectFactoryFixer implements Stripper
 
     private boolean checkIsXjcObjectFactoryFile(String content)
     {
-        return content.contains("JavaTM Architecture for XML Binding (JAXB)")
+        return content.contains("JavaTM Architecture for XML Binding")
                 && content.contains("public ObjectFactory()");
     }
 }

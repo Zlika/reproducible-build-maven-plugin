@@ -83,6 +83,7 @@ public final class StripJaxbMojo extends AbstractMojo
                 .filter(f -> "ObjectFactory.java".equals(f.toFile().getName()))
                 .forEach(f ->
                 {
+                	getLog().info("Stripping " + f.toFile().getAbsolutePath());
                     try
                     {
                         fixer.strip(f.toFile(), tmpFile);
