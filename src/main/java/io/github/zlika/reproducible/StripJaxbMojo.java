@@ -58,7 +58,7 @@ public final class StripJaxbMojo extends AbstractMojo
     {
         if (skip)
         {
-            getLog().info("Skipping execution of goal \"fix-xjc\"");
+            getLog().info("Skipping execution of goal \"strip-jaxb\"");
         }
         else
         {

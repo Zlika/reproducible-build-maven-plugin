@@ -58,7 +58,7 @@ public final class StripJarMojo extends AbstractMojo
     {
         if (skip)
         {
-            getLog().info("Skipping execution of goal \"strip\"");
+            getLog().info("Skipping execution of goal \"strip-jar\"");
         }
         else
         {
