@@ -1,5 +1,8 @@
 Next Release (0.3)
 ==================
+Features
+--------
+* Add M2Eclipse lifecycle mapping metadata for Eclipse IDE.
 
 Release 0.2
 ===========
