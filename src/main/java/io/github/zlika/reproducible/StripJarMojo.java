@@ -78,6 +78,8 @@ public final class StripJarMojo extends AbstractMojo
                 new ZipStripper()
                     .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
                     .addFileStripper("META-INF/maven/\\S*/pom.properties", new PomPropertiesStripper())
+                    .addFileStripper("META-INF/maven/plugin.xml", new MavenPluginToolsStripper())
+                    .addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper())
                     .strip(zip, stripped);
                 if (overwrite)
                 {
