@@ -2,18 +2,29 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
   id="FAQ" title="Frequently Asked Questions">
- <part id="General">
-   <faq id="Build not reproducible">
-     <question>I use the plugin, but my build is not reproducible!</question>
-     <answer>
+  <part id="General">
+    <faq id="Build not reproducible">
+      <question>I use the plugin, but my build is not reproducible!</question>
+      <answer>
+        <p>
+        Be sure that you compile your project on a given OS/architecture and with a given compiler version.
+        Also ensure that all your dependencies have an imposed version (use maven-enforcer-plugin for that).
+       </p>
        <p>
-       Be sure that you compile your project on a given OS/architecture and with a given compiler version.
-       Also ensure that all your dependencies have an imposed version (use maven-enforcer-plugin for that).
-      </p>
-      <p>
-       If you find other interesting sources of "non reproducible" data that this plugin could remove, please open a ticket in the bug tracker or send a pull request.
-      </p>
-     </answer>
-   </faq>
+        If you find other interesting sources of "non reproducible" data that this plugin could remove, please open a ticket in the bug tracker or send a pull request.
+       </p>
+      </answer>
+    </faq>
+    <faq id="Standalone mode">
+      <question>Can I use the plugin in standalone mode to strip existing JAR files?</question>
+      <answer>
+        <p>
+        The strip-jar goal can be executed without a Maven pom file:
+        </p>
+        <p>
+        <code>mvn io.github.zlika:reproducible-build-maven-plugin:0.3:strip-jar -Dreproducible.outputDirectory=/tmp</code>
+        </p>
+      </answer>
+    </faq>
   </part>
 </faqs>
