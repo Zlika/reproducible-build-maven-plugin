@@ -29,7 +29,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * Fixes the produced artifacts (ZIP/JAR/WAR/EAR) to make the build reproducible.
  */
-@Mojo(name = "strip-jar", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
+@Mojo(name = "strip-jar", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresProject = false)
 public final class StripJarMojo extends AbstractMojo
 {
     private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear" };
@@ -37,7 +37,7 @@ public final class StripJarMojo extends AbstractMojo
     /**
      * Directory where to find zip/jar/war/ear files for stripping.
      */
-    @Parameter(defaultValue = "${project.build.directory}", required = true)
+    @Parameter(defaultValue = "${project.build.directory}", property = "reproducible.outputDirectory", required = true)
     private File outputDirectory;
     
     /**
