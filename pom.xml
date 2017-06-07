@@ -78,10 +78,11 @@
     <maven-source-plugin.version>2.4</maven-source-plugin.version>
     <maven-site-plugin.version>3.4</maven-site-plugin.version>
     <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>2.18.1</maven-surefire-report-plugin.version>
     <wagon-gitsite.version>0.3.1</wagon-gitsite.version>
     
     <!-- Dependency versions -->
-    <commons-compress.version>1.10</commons-compress.version>
+    <commons-compress.version>1.14</commons-compress.version>
     <junit.version>4.12</junit.version>
     <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
     <maven-plugin-api.version>3.3.3</maven-plugin-api.version>
@@ -118,6 +119,10 @@
         <exclusion>
           <groupId>org.tukaani</groupId>
           <artifactId>xz</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.brotli</groupId>
+          <artifactId>dec</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -269,6 +274,7 @@
   <reporting>
     <plugins>
 
+      <!-- Static code analysis report -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
@@ -279,6 +285,21 @@
         </configuration>
       </plugin>
 
+      <!-- Unit tests report -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${maven-surefire-report-plugin.version}</version>
+      </plugin>
+
+      <!-- Integration tests report -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <version>${maven-invoker-plugin.version}</version>
+      </plugin>
+
+      <!-- Plugin documentation report -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
@@ -290,12 +311,14 @@
         </configuration>
       </plugin>
 
+      <!-- Project info report -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
         <version>${maven-project-info-reports-plugin.version}</version>
       </plugin>
-      
+
+      <!-- Code coverage report -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -310,6 +333,7 @@
 
   <profiles>
 
+    <!-- Run the integration tests -->
     <profile>
       <id>run-its</id>
       <build>
@@ -385,6 +409,7 @@
       </build>
     </profile>
     
+    <!-- Additional goals to release the plugin -->
     <profile> 
       <id>release</id>
       <build>
@@ -416,6 +441,7 @@
             </executions>
           </plugin>
           
+          <!-- Sign the artifacts -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
