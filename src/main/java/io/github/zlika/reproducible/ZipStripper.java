@@ -21,10 +21,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp;
@@ -37,22 +34,9 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
  * Strips non-reproducible data from a ZIP file.
  * It rebuilds the ZIP file with a predictable order for the zip entries and sets zip entry dates to a fixed value.
  */
-final class ZipStripper implements Stripper
+final class ZipStripper extends AbstractStripper implements Stripper
 {
-    private final Map<String, Stripper> subFilters = new HashMap<>();
-    
-    /**
-     * Adds a stripper for a given file in the Zip.
-     * @param filename the name of the file in the Zip (regular expression).
-     * @param stripper the stripper to apply on the file.
-     * @return this object (for method chaining).
-     */
-    public ZipStripper addFileStripper(String filename, Stripper stripper)
-    {
-        subFilters.put(filename, stripper);
-        return this;
-    }
-    
+
     @Override
     public void strip(File in, File out) throws IOException
     {
@@ -91,18 +75,7 @@ final class ZipStripper implements Stripper
         }
     }
     
-    private Stripper getSubFilter(String name)
-    {
-        for (Entry<String, Stripper> filter : subFilters.entrySet())
-        {
-            if (name.matches(filter.getKey()))
-            {
-                return filter.getValue();
-            }
-        }
-        return null;
-    }
-    
+   
     private List<String> sortEntriesByName(Enumeration<ZipArchiveEntry> entries)
     {
         return Collections.list(entries).stream()

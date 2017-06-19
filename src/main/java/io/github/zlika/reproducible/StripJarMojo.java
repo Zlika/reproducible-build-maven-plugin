@@ -34,6 +34,10 @@ public final class StripJarMojo extends AbstractMojo
 {
     private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear" };
     
+    private static final String TAR_GZ_EXT =  "tar.gz";
+    
+    private static final String TAR_BZ_EXT =  "tar.bz";
+    
     /**
      * Directory where to find zip/jar/war/ear files for stripping.
      */
@@ -76,12 +80,7 @@ public final class StripJarMojo extends AbstractMojo
             try
             {
                 final File stripped = createStrippedFilename(zip);
-                new ZipStripper()
-                    .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
-                    .addFileStripper("META-INF/maven/\\S*/pom.properties", new PomPropertiesStripper())
-                    .addFileStripper("META-INF/maven/plugin.xml", new MavenPluginToolsStripper())
-                    .addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper())
-                    .strip(zip, stripped);
+                addFileStrippers(new ZipStripper()).strip(zip, stripped);
                 if (overwrite)
                 {
                     Files.move(stripped.toPath(), zip.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -92,6 +91,49 @@ public final class StripJarMojo extends AbstractMojo
                 throw new MojoExecutionException("Error when stripping " + zip.getAbsolutePath(), e);
             }
         }
+        final File[] tarGzFiles = findTarGzFiles(outputDirectory);
+        for (File tarGz : tarGzFiles)
+        {
+            getLog().info("Stripping " + tarGz.getAbsolutePath());
+            try
+            {
+                final File stripped = createStrippedFilename(tarGz);
+                addFileStrippers(new TarStripper()).strip(tarGz, stripped);
+                if (overwrite)
+                {
+                    Files.move(stripped.toPath(), tarGz.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+            catch (IOException e)
+            {
+                throw new MojoExecutionException("Error when stripping " + tarGz.getAbsolutePath(), e);
+            }
+        }        
+        final File[] tarBzFiles = findTarBzFiles(outputDirectory);
+        for (File tarBz : tarBzFiles)
+        {
+            getLog().info("Stripping " + tarBz.getAbsolutePath());
+            try
+            {
+                final File stripped = createStrippedFilename(tarBz);
+                addFileStrippers(new TarBzStripper()).strip(tarBz, stripped);
+                if (overwrite)
+                {
+                    Files.move(stripped.toPath(), tarBz.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+            catch (IOException e)
+            {
+                throw new MojoExecutionException("Error when stripping " + tarBz.getAbsolutePath(), e);
+            }
+        }
+    }
+    
+    private AbstractStripper addFileStrippers(AbstractStripper stripper){
+    	return stripper.addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
+    	.addFileStripper("META-INF/maven/\\S*/pom.properties", new PomPropertiesStripper())
+    	.addFileStripper("META-INF/maven/plugin.xml", new MavenPluginToolsStripper())
+    	.addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper());
     }
     
     private File[] findZipFiles(File folder)
@@ -100,6 +142,19 @@ public final class StripJarMojo extends AbstractMojo
                 Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith(ext)));
         return zipFiles != null ? zipFiles : new File[0];
     }
+    
+    private File[] findTarBzFiles(File folder)
+    {
+        final File[] zipFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_BZ_EXT));
+        return zipFiles != null ? zipFiles : new File[0];
+    }    
+
+    private File[] findTarGzFiles(File folder)
+    {
+        final File[] zipFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_GZ_EXT));
+        return zipFiles != null ? zipFiles : new File[0];
+    }    
+
     
     private File createStrippedFilename(File originalFile)
     {
