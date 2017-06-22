@@ -54,7 +54,7 @@ class TextFileStripper implements Stripper
                 new InputStreamReader(new FileInputStream(in), StandardCharsets.UTF_8)))
         {
             reader.lines().filter(s -> predicates.stream().allMatch(p -> p.test(s)))
-                        .forEach(s -> 
+                        .forEach(s ->
                         {
                             try
                             {

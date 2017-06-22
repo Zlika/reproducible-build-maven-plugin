@@ -83,7 +83,7 @@ public final class StripJaxbMojo extends AbstractMojo
                 .filter(f -> "ObjectFactory.java".equals(f.toFile().getName()))
                 .forEach(f ->
                 {
-                	getLog().info("Stripping " + f.toFile().getAbsolutePath());
+                    getLog().info("Stripping " + f.toFile().getAbsolutePath());
                     try
                     {
                         fixer.strip(f.toFile(), tmpFile);
@@ -108,7 +108,8 @@ public final class StripJaxbMojo extends AbstractMojo
             final File out = File.createTempFile("ObjectFactory", null);
             out.deleteOnExit();
             return out;
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             throw new MojoExecutionException("Cannot create temp file", e);
         }

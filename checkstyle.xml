@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<module name="Checker">
+
+  <module name="RegexpHeader">
+    <property
+       name="header"
+       value="^/\*$\n^ \* Licensed under the Apache License, Version 2.0 *"/>
+  </module>
+
+  <module name="NewlineAtEndOfFile"/>
+  <module name="FileTabCharacter"/>
+
+  <module name="SuppressWithNearbyCommentFilter">
+    <property name="commentFormat" value="CHECKSTYLE IGNORE LINE\: ([\w\|]+)"/>
+    <property name="checkFormat" value="$1"/>
+    <property name="influenceFormat" value="1"/>
+  </module>
+
+  <module name="SuppressionFilter">
+    <property name="file" value="${config_loc}/checkstyle-suppressions.xml"/>
+  </module>
+
+  <module name="TreeWalker">
+
+    <module name="FileContentsHolder"/>
+
+    <!-- Javadoc Comments. -->
+    <module name="JavadocType">
+      <property name="scope" value="anoninner"/>
+    </module>
+    <module name="JavadocMethod">
+      <property name="scope" value="package"/>
+      <property name="allowMissingParamTags" value="true"/>
+      <property name="allowMissingReturnTag" value="true"/>
+      <property name="allowUndeclaredRTE" value="true"/>
+      <property name="suppressLoadErrors" value="true"/>
+    </module>
+    <module name="JavadocVariable">
+      <property name="scope" value="package"/>
+    </module>
+
+    <module name="JavadocStyle">
+      <property name="scope" value="anoninner"/>
+      <property name="checkEmptyJavadoc" value="true"/>
+    </module>
+
+    <!-- Naming Conventions. -->
+    <module name="ConstantName"/>
+    <module name="ClassTypeParameterName"/>
+    <module name="LocalFinalVariableName"/>
+    <module name="LocalVariableName"/>
+    <module name="MemberName"/>
+    <module name="MethodName"/>
+    <module name="MethodTypeParameterName"/>
+    <module name="ParameterName"/>
+    <module name="StaticVariableName"/>
+    <module name="TypeName"/>
+    <module name="PackageName">
+        <property name="format" value="^io\.github\.zlika\.reproducible(\.[a-z][a-z0-9_]*)*$"/>
+    </module>
+    <module name="HiddenField">
+      <property name="ignoreConstructorParameter" value="true"/>
+    </module>
+
+    <!-- Imports. -->
+    <module name="AvoidStarImport"/>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+    <module name="ImportOrder">
+      <property name="ordered" value="true"/>
+      <property name="separated" value="true"/>
+      <property name="caseSensitive" value="true"/>
+    </module>
+    <module name="AvoidStaticImport"/>
+
+    <!-- Layout and whitespace. -->
+    <module name="Indentation"/>
+    <module name="LineLength">
+      <property name="max" value="120"/>
+      <property name="ignorePattern" value="(^import +)|(^ *\* *[^ ]+$)|(^ *\* *@see)|(^ *\* *@author)|(^ *\* *\$Id)"/>
+    </module>
+    <module name="EmptyForInitializerPad"/>
+    <module name="EmptyForIteratorPad"/>
+    <module name="MethodParamPad"/>
+    <module name="NoWhitespaceBefore"/>
+    <module name="ParenPad"/>
+    <module name="TypecastParenPad"/>
+    <module name="WhitespaceAfter"/>
+    <module name="WhitespaceAround"/>
+    <module name="GenericWhitespace"/>
+    <module name="NoWhitespaceAfter">
+      <property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS"/>
+    </module>
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="^(?!(?:[ \t]*?(?:\/?\*\*?|\/\/)[\S \t]+?|[ \t]+$))[\S \t]+[ \t]+$"/>
+      <property name="message" value="Trailing whitespace"/>
+    </module>
+    <module name="OperatorWrap"/>
+
+    <!-- Structure. -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier">
+        <property name="tokens" value="METHOD_DEF,VARIABLE_DEF,ANNOTATION_FIELD_DEF,INTERFACE_DEF"/>
+    </module>
+    <module name="DeclarationOrder"/>
+    <module name="MultipleVariableDeclarations"/>
+    <module name="OneStatementPerLine"/>
+    <module name="NeedBraces"/>
+    <module name="LeftCurly">
+        <property name="option" value="nl"/>
+    </module>
+    <module name="RightCurly">
+        <property name="option" value="alone"/>
+    </module>
+    <module name="AvoidNestedBlocks"/>
+    <module name="EmptyStatement"/>
+
+    <!-- Common coding and design errors. -->
+    <module name="CovariantEquals"/>
+    <module name="EqualsHashCode"/>
+    <module name="IllegalInstantiation">
+      <property name="classes" value="java.lang.Boolean,java.lang.Short,java.lang.Integer,java.lang.Long,java.lang.Float,java.lang.Double"/>
+    </module>
+    <module name="MissingSwitchDefault"/>
+    <module name="DefaultComesLast"/>
+    <module name="FallThrough"/>
+    <module name="StringLiteralEquality"/>
+    <module name="EqualsAvoidNull"/>
+    <module name="IllegalCatch"/>
+    <module name="IllegalThrows"/>
+    <module name="ParameterAssignment"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+    <module name="HideUtilityClassConstructor"/>
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="System\.out\.print"/>
+      <property name="message" value="Consider using logging instead of System.out.println"/>
+      <property name="ignoreComments" value="true"/>
+    </module>
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="System\.err\.print"/>
+      <property name="message" value="Consider using logging instead of System.err.println"/>
+      <property name="ignoreComments" value="true"/>
+    </module>
+
+    <!-- Quality metrics. -->
+    <module name="ExecutableStatementCount">
+      <property name="max" value="40"/>
+    </module>
+    <module name="MethodLength"/>
+    <module name="AnonInnerLength">
+      <property name="max" value="40"/>
+    </module>
+    <module name="ParameterNumber">
+      <property name="max" value="5"/>
+    </module>
+    <module name="OuterTypeNumber"/>
+    <module name="ReturnCount">
+      <property name="max" value="4"/>
+    </module>
+    <module name="ThrowsCount">
+      <property name="max" value="3"/>
+    </module>
+    <module name="BooleanExpressionComplexity">
+      <property name="tokens" value="LAND,LOR"/>
+    </module>
+    <module name="ClassDataAbstractionCoupling">
+      <property name="max" value="20"/>
+    </module>
+    <module name="ClassFanOutComplexity">
+        <property name="max" value="25"/>
+    </module>
+    <module name="NestedIfDepth">
+      <property name="max" value="3"/>
+    </module>
+    <module name="NestedTryDepth"/>
+    <module name="CyclomaticComplexity">
+      <property name="max" value="15"/>
+    </module>
+    <module name="NPathComplexity"/>
+
+  </module>
+</module>

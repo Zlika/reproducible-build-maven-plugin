@@ -54,6 +54,7 @@ public final class StripJarMojo extends AbstractMojo
     @Parameter(defaultValue = "false", property = "reproducible.skip")
     private boolean skip;
 
+    @Override
     public void execute() throws MojoExecutionException
     {
         if (skip)

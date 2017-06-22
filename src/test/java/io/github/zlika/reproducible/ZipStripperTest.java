@@ -28,7 +28,7 @@ public class ZipStripperTest
 {
     /**
      * Tests stripping on a reference JAR file.
-     * @throws IOException
+     * @throws IOException 
      */
     @Test
     public void testStripZip() throws IOException

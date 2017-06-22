@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+    "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+
+  <!-- Don't require package docs for tests. -->
+  <suppress checks="JavadocPackage" files="[\\/]test[\\/]java[\\/]" />
+  
+  <!-- It is safe for test methods to throw lots of exceptions. -->
+  <suppress checks="ThrowsCount" files="Test+\.java" />
+
+  <!-- Don't check files automatically generated. -->
+  <suppress checks="[a-zA-Z0-9]*" files="[\\/]target[\\/]generated-sources[\\/]" />
+
+  <!-- Ignore properties files. -->
+  <suppress checks="[a-zA-Z0-9]*" files="\.properties" />
+
+</suppressions>
