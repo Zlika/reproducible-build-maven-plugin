@@ -34,30 +34,19 @@ import org.apache.commons.compress.archivers.zip.ZipExtraField;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 
 /**
- * Strips non-reproducible data from a ZIP file.
- * It rebuilds the ZIP file with a predictable order for the zip entries and sets zip entry dates to a fixed value.
+ * Strips non-reproducible data from a ZIP file. It rebuilds the ZIP file with a predictable order for the zip entries
+ * and sets zip entry dates to a fixed value.
  */
 final class ZipStripper implements Stripper
 {
+
     private final Map<String, Stripper> subFilters = new HashMap<>();
-    
-    /**
-     * Adds a stripper for a given file in the Zip.
-     * @param filename the name of the file in the Zip (regular expression).
-     * @param stripper the stripper to apply on the file.
-     * @return this object (for method chaining).
-     */
-    public ZipStripper addFileStripper(String filename, Stripper stripper)
-    {
-        subFilters.put(filename, stripper);
-        return this;
-    }
-    
+
     @Override
     public void strip(File in, File out) throws IOException
     {
         try (final ZipFile zip = new ZipFile(in);
-             final ZipArchiveOutputStream zout = new ZipArchiveOutputStream(out))
+                final ZipArchiveOutputStream zout = new ZipArchiveOutputStream(out))
         {
             final List<String> sortedNames = sortEntriesByName(zip.getEntries());
             for (String name : sortedNames)
@@ -90,19 +79,7 @@ final class ZipStripper implements Stripper
             }
         }
     }
-    
-    private Stripper getSubFilter(String name)
-    {
-        for (Entry<String, Stripper> filter : subFilters.entrySet())
-        {
-            if (name.matches(filter.getKey()))
-            {
-                return filter.getValue();
-            }
-        }
-        return null;
-    }
-    
+
     private List<String> sortEntriesByName(Enumeration<ZipArchiveEntry> entries)
     {
         return Collections.list(entries).stream()
@@ -110,7 +87,7 @@ final class ZipStripper implements Stripper
                 .sorted()
                 .collect(Collectors.toList());
     }
-    
+
     private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
         // Set times
@@ -127,5 +104,32 @@ final class ZipStripper implements Stripper
             }
         }
         return entry;
+    }
+
+    /**
+     * Adds a stripper for a given file in the Zip.
+     * 
+     * @param filename
+     *            the name of the file in the Zip (regular expression).
+     * @param stripper
+     *            the stripper to apply on the file.
+     * @return this object (for method chaining).
+     */
+    public ZipStripper addFileStripper(String filename, Stripper stripper)
+    {
+        subFilters.put(filename, stripper);
+        return this;
+    }
+
+    private Stripper getSubFilter(String name)
+    {
+        for (Entry<String, Stripper> filter : subFilters.entrySet())
+        {
+            if (name.matches(filter.getKey()))
+            {
+                return filter.getValue();
+            }
+        }
+        return null;
     }
 }

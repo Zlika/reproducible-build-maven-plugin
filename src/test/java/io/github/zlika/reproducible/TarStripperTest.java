@@ -11,7 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.github.zlika.reproducible;
 
 import java.io.File;
@@ -22,33 +21,35 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link ZipStripper}.
+ * Tests for tar Stripper.
+ * 
+ * @author tglman
+ *
  */
-public class ZipStripperTest
+public class TarStripperTest
 {
+
     /**
-     * Tests stripping on a reference JAR file.
+     * Tests stripping on a reference Tar file.
      * 
      * @throws IOException
      *             in case of error on test file operations
      */
     @Test
-    public void testStripZip() throws IOException
+    public void testStripTar() throws IOException
     {
-        final String testJarName = "test-jar.jar";
-        final String strippedJarName = "test-jar-stripped.jar";
+        final String testTarName = "test-tar.tar";
+        final String strippedTarName = "test-tar-stripped.tar";
 
-        final File inFile = new File(this.getClass().getResource(testJarName).getFile());
-        final File outFile = File.createTempFile("test-jar", null);
+        final File inFile = new File(this.getClass().getResource(testTarName).getFile());
+        final File outFile = File.createTempFile("test-tar", "tar");
         outFile.deleteOnExit();
-        final File expected = new File(this.getClass().getResource(strippedJarName).getFile());
+        final File expected = new File(this.getClass().getResource(strippedTarName).getFile());
 
-        new ZipStripper()
-                .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
-                .addFileStripper("META-INF/\\S*/pom.properties", new PomPropertiesStripper())
-                .strip(inFile, outFile);
+        new TarStripper().strip(inFile, outFile);
 
         Assert.assertArrayEquals(Files.readAllBytes(expected.toPath()), Files.readAllBytes(outFile.toPath()));
         outFile.delete();
     }
+
 }
