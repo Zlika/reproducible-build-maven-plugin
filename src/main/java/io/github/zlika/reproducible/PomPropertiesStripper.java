@@ -21,7 +21,7 @@ import java.io.IOException;
  * Strips non-reproducible data from Maven pom properties files.
  * This stripper removes all comment lines (as some of them can contain date/time).
  */
-final class PomPropertiesStripper implements Stripper
+public final class PomPropertiesStripper implements Stripper
 {
     @Override
     public void strip(File in, File out) throws IOException

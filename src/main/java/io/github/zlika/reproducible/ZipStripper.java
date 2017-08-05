@@ -37,7 +37,7 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
  * Strips non-reproducible data from a ZIP file.
  * It rebuilds the ZIP file with a predictable order for the zip entries and sets zip entry dates to a fixed value.
  */
-final class ZipStripper implements Stripper
+public final class ZipStripper implements Stripper
 {
     private final Map<String, Stripper> subFilters = new HashMap<>();
     
