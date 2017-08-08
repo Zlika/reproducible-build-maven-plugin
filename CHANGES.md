@@ -6,6 +6,7 @@ Release 0.3
 Bug Fixes
 ---------
 * [#6](https://github.com/Zlika/reproducible-build-maven-plugin/issues/6): Fix wrong detection of ZIP files.
+
 Features
 --------
 * Add M2Eclipse lifecycle mapping metadata for Eclipse IDE.
