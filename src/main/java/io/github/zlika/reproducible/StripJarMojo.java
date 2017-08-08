@@ -97,7 +97,8 @@ public final class StripJarMojo extends AbstractMojo
     private File[] findZipFiles(File folder)
     {
         final File[] zipFiles = folder.listFiles((dir, name) ->
-                Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith(ext)));
+                Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith("." + ext))
+                && new File(dir, name).isFile());
         return zipFiles != null ? zipFiles : new File[0];
     }
     
