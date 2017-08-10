@@ -200,7 +200,8 @@
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <useReleaseProfile>false</useReleaseProfile>
             <releaseProfiles>release</releaseProfiles>
-            <goals>deploy</goals>
+            <goals>deploy site-deploy</goals>
+            <tagNameFormat>v@{project.version}</tagNameFormat>
           </configuration>
         </plugin>
         
