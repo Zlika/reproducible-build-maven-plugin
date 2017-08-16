@@ -26,7 +26,7 @@ import java.io.IOException;
  * - Build-Date / Build-Time
  * - Bnd-LastModified
  */
-final class ManifestStripper implements Stripper
+public final class ManifestStripper implements Stripper
 {
     @Override
     public void strip(File in, File out) throws IOException
