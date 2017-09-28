@@ -1,5 +1,9 @@
 Next Release (0.4)
 ==================
+Non-functional changes
+----------------------
+* [#10](https://github.com/Zlika/reproducible-build-maven-plugin/issues/10): Declare the plugin's goals as thread-safe.
+* Add "Automatic-Module-Name" in Manifest.
 
 Release 0.3
 ===========
