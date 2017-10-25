@@ -14,11 +14,19 @@
 
 package io.github.zlika.reproducible;
 
+import org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipExtraField;
+import org.apache.commons.compress.archivers.zip.ZipFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -26,12 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
-import org.apache.commons.compress.archivers.zip.ZipExtraField;
-import org.apache.commons.compress.archivers.zip.ZipFile;
 
 /**
  * Strips non-reproducible data from a ZIP file.
@@ -113,11 +115,16 @@ public final class ZipStripper implements Stripper
     
     private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
+        final OffsetDateTime date_time =
+          OffsetDateTime.parse("2000-01-01T00:00:00.0000000+00:00");
+
+        final Instant instant = date_time.toInstant();
+
         // Set times
-        entry.setCreationTime(FileTime.fromMillis(0));
-        entry.setLastAccessTime(FileTime.fromMillis(0));
-        entry.setLastModifiedTime(FileTime.fromMillis(0));
-        entry.setTime(0);
+        entry.setCreationTime(FileTime.from(instant));
+        entry.setLastAccessTime(FileTime.from(instant));
+        entry.setLastModifiedTime(FileTime.from(instant));
+        entry.setTime(instant.toEpochMilli());
         // Remove extended timestamps
         for (ZipExtraField field : entry.getExtraFields())
         {
