@@ -14,12 +14,6 @@
 
 package io.github.zlika.reproducible;
 
-import org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
-import org.apache.commons.compress.archivers.zip.ZipExtraField;
-import org.apache.commons.compress.archivers.zip.ZipFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,6 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipExtraField;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 
 /**
  * Strips non-reproducible data from a ZIP file.
@@ -115,10 +115,9 @@ public final class ZipStripper implements Stripper
     
     private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
-        final OffsetDateTime date_time =
-          OffsetDateTime.parse("2000-01-01T00:00:00.0000000+00:00");
+        final OffsetDateTime dateTime = OffsetDateTime.parse("2000-01-01T00:00:00.0000000+00:00");
 
-        final Instant instant = date_time.toInstant();
+        final Instant instant = dateTime.toInstant();
 
         // Set times
         entry.setCreationTime(FileTime.from(instant));
