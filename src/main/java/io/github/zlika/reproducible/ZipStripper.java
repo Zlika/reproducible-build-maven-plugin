@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -113,11 +115,15 @@ public final class ZipStripper implements Stripper
     
     private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
+        final OffsetDateTime dateTime = OffsetDateTime.parse("2000-01-01T00:00:00.0000000+00:00");
+
+        final Instant instant = dateTime.toInstant();
+
         // Set times
-        entry.setCreationTime(FileTime.fromMillis(0));
-        entry.setLastAccessTime(FileTime.fromMillis(0));
-        entry.setLastModifiedTime(FileTime.fromMillis(0));
-        entry.setTime(0);
+        entry.setCreationTime(FileTime.from(instant));
+        entry.setLastAccessTime(FileTime.from(instant));
+        entry.setLastModifiedTime(FileTime.from(instant));
+        entry.setTime(instant.toEpochMilli());
         // Remove extended timestamps
         for (ZipExtraField field : entry.getExtraFields())
         {
