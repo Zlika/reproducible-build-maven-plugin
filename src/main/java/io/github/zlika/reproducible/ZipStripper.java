@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
-import java.time.Instant;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -41,8 +41,13 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
  */
 public final class ZipStripper implements Stripper
 {
-    private static final Instant DEFAULT_ZIP_INSTANT
-            = OffsetDateTime.parse("2000-01-01T00:00:00.0000000+00:00").toInstant();
+    // The ZipArchiveEntry.setXxxTime() methods write the time taking into account the local time zone,
+    // so we must first convert the desired timestamp value in the local time zone to have the
+    // same timestamps in the ZIP file when the project is built on another computer in a
+    // different time zone.
+    private static final long DEFAULT_ZIP_TIMESTAMP
+                = LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0).atZone(ZoneOffset.systemDefault())
+                    .toInstant().toEpochMilli();
     
     private final Map<String, Stripper> subFilters = new HashMap<>();
     
@@ -119,10 +124,10 @@ public final class ZipStripper implements Stripper
     private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
         // Set times
-        entry.setCreationTime(FileTime.from(DEFAULT_ZIP_INSTANT));
-        entry.setLastAccessTime(FileTime.from(DEFAULT_ZIP_INSTANT));
-        entry.setLastModifiedTime(FileTime.from(DEFAULT_ZIP_INSTANT));
-        entry.setTime(DEFAULT_ZIP_INSTANT.toEpochMilli());
+        entry.setCreationTime(FileTime.fromMillis(DEFAULT_ZIP_TIMESTAMP));
+        entry.setLastAccessTime(FileTime.fromMillis(DEFAULT_ZIP_TIMESTAMP));
+        entry.setLastModifiedTime(FileTime.fromMillis(DEFAULT_ZIP_TIMESTAMP));
+        entry.setTime(DEFAULT_ZIP_TIMESTAMP);
         // Remove extended timestamps
         for (ZipExtraField field : entry.getExtraFields())
         {
