@@ -41,6 +41,9 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
  */
 public final class ZipStripper implements Stripper
 {
+    private static final Instant DEFAULT_ZIP_INSTANT
+            = OffsetDateTime.parse("2000-01-01T00:00:00.0000000+00:00").toInstant();
+    
     private final Map<String, Stripper> subFilters = new HashMap<>();
     
     /**
@@ -115,15 +118,11 @@ public final class ZipStripper implements Stripper
     
     private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
-        final OffsetDateTime dateTime = OffsetDateTime.parse("2000-01-01T00:00:00.0000000+00:00");
-
-        final Instant instant = dateTime.toInstant();
-
         // Set times
-        entry.setCreationTime(FileTime.from(instant));
-        entry.setLastAccessTime(FileTime.from(instant));
-        entry.setLastModifiedTime(FileTime.from(instant));
-        entry.setTime(instant.toEpochMilli());
+        entry.setCreationTime(FileTime.from(DEFAULT_ZIP_INSTANT));
+        entry.setLastAccessTime(FileTime.from(DEFAULT_ZIP_INSTANT));
+        entry.setLastModifiedTime(FileTime.from(DEFAULT_ZIP_INSTANT));
+        entry.setTime(DEFAULT_ZIP_INSTANT.toEpochMilli());
         // Remove extended timestamps
         for (ZipExtraField field : entry.getExtraFields())
         {
