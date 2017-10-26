@@ -5,12 +5,13 @@ Release 0.4
 ===========
 Bug Fixes
 ---------
-* [12](https://github.com/Zlika/reproducible-build-maven-plugin/issues/12): Change default ZIP timestamp to 2000-01-01T00:00:00Z to workaround Java 9 compiler bug [JDK-8184940](https://bugs.openjdk.java.net/browse/JDK-8184940) - [@io7m](https://github.com/io7m).
+* [#12](https://github.com/Zlika/reproducible-build-maven-plugin/issues/12): Change default ZIP timestamp to 2000/01/01 at 00:00:00 to work around Java 9 compiler bug [JDK-8184940](https://bugs.openjdk.java.net/browse/JDK-8184940) - [@io7m](https://github.com/io7m).
 
 Non-functional changes
 ----------------------
 * [#10](https://github.com/Zlika/reproducible-build-maven-plugin/issues/10): Declare the plugin's goals as thread-safe.
 * Add "Automatic-Module-Name" in Manifest.
+* The plugin can now be built with Java 9.
 
 Release 0.3
 ===========
