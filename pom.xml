@@ -59,35 +59,35 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
     <!-- Maven plugin versions -->
-    <coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
-    <findbugs-maven-plugin.version>3.0.2</findbugs-maven-plugin.version>
+    <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+    <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
     <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>2.6.1</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+    <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
-    <maven-invoker-plugin.version>2.0.0</maven-invoker-plugin.version>
-    <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
-    <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
-    <maven-project-info-reports-plugin.version>2.8</maven-project-info-reports-plugin.version>
-    <maven-release-plugin.version>2.5.2</maven-release-plugin.version>
-    <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
-    <maven-scm.version>1.9.4</maven-scm.version>
-    <maven-source-plugin.version>2.4</maven-source-plugin.version>
-    <maven-site-plugin.version>3.4</maven-site-plugin.version>
-    <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.18.1</maven-surefire-report-plugin.version>
+    <maven-invoker-plugin.version>3.0.1</maven-invoker-plugin.version>
+    <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
+    <maven-plugin-plugin.version>3.5</maven-plugin-plugin.version>
+    <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
+    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+    <maven-scm.version>1.9.5</maven-scm.version>
+    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+    <maven-site-plugin.version>3.6</maven-site-plugin.version>
+    <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>2.20.1</maven-surefire-report-plugin.version>
     <wagon-gitsite.version>0.3.1</wagon-gitsite.version>
     
     <!-- Dependency versions -->
-    <commons-compress.version>1.14</commons-compress.version>
+    <commons-compress.version>1.15</commons-compress.version>
     <junit.version>4.12</junit.version>
-    <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
-    <maven-plugin-api.version>3.3.3</maven-plugin-api.version>
-    <plexus-utils.version>3.0.22</plexus-utils.version>
+    <maven-plugin-annotations.version>3.5</maven-plugin-annotations.version>
+    <maven-plugin-api.version>3.5.2</maven-plugin-api.version>
+    <plexus-utils.version>3.1.0</plexus-utils.version>
     
   </properties>
 
