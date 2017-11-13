@@ -16,7 +16,7 @@
     <fluidoSkin>
       <topBarEnabled>false</topBarEnabled>
       <sideBarEnabled>true</sideBarEnabled>
-      <breadcrumbDivider>»</breadcrumbDivider>
+      <breadcrumbDivider>/</breadcrumbDivider>
       <gitHub>
         <projectId>zlika/reproducible-build-maven-plugin</projectId>
         <ribbonOrientation>right</ribbonOrientation>

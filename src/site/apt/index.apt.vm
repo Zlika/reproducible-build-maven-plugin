@@ -23,7 +23,7 @@ ${project.name}
  
    ** sorts ZIP entries by name,
   
-   ** removes file timestamps in ZIP entries,
+   ** replaces file timestamps in ZIP entries with a fixed value,
   
    ** removes timestamps, user names and tool versions in MANIFEST.MF,
   

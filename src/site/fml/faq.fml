@@ -22,7 +22,7 @@
         The strip-jar goal can be executed without a Maven pom file:
         </p>
         <p>
-        <code>mvn io.github.zlika:reproducible-build-maven-plugin:0.3:strip-jar -Dreproducible.outputDirectory=/tmp</code>
+        <code>mvn io.github.zlika:reproducible-build-maven-plugin:0.4:strip-jar -Dreproducible.outputDirectory=/tmp</code>
         </p>
       </answer>
     </faq>
