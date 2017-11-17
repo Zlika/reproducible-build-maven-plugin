@@ -16,6 +16,7 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
 
 /**
  * Strips non-reproducible data from MANIFEST files.
@@ -25,19 +26,42 @@ import java.io.IOException;
  * - Build-Jdk
  * - Build-Date / Build-Time
  * - Bnd-LastModified
+ * It also ensures that the MANIFEST entries are in a reproducible order
+ * (workaround for MSHARED-511 that was fixed in maven-archiver-3.0.1).
  */
 public final class ManifestStripper implements Stripper
 {
+    private static final Comparator<String> MANIFEST_ENTRY_COMPARATOR = new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                if (o1.startsWith("Manifest-Version") || o2.trim().isEmpty())
+                {
+                    return -1;
+                }
+                else if (o2.startsWith("Manifest-Version") || o1.trim().isEmpty())
+                {
+                    return 1;
+                }
+                else
+                {
+                    return o1.compareTo(o2);
+                }
+            }
+        };
+    
     @Override
     public void strip(File in, File out) throws IOException
     {
-        new TextFileStripper()
+        final TextFileStripper s1 = new TextFileStripper()
             .addPredicate(s -> s.startsWith("Built-By"))
             .addPredicate(s -> s.startsWith("Created-By"))
             .addPredicate(s -> s.startsWith("Build-Jdk"))
             .addPredicate(s -> s.startsWith("Build-Date"))
             .addPredicate(s -> s.startsWith("Build-Time"))
-            .addPredicate(s -> s.startsWith("Bnd-LastModified"))
-            .strip(in, out);
+            .addPredicate(s -> s.startsWith("Bnd-LastModified"));
+        final SortTextFileStripper s2 = new SortTextFileStripper(MANIFEST_ENTRY_COMPARATOR);
+        new CompoundStripper(s1, s2).strip(in, out);
     }
 }

@@ -1,5 +1,8 @@
 Next Release (0.5)
 ==================
+Features
+--------
+* Sorts entries in MANIFEST.MF file (workaround for maven-archiver bug [MSHARED-511](https://issues.apache.org/jira/browse/MSHARED-511)).
 
 Release 0.4
 ===========
