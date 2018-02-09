@@ -13,7 +13,11 @@
   <!-- Don't check files automatically generated. -->
   <suppress checks="[a-zA-Z0-9]*" files="[\\/]target[\\/]generated-sources[\\/]" />
 
-  <!-- Ignore properties files. -->
+  <!-- Ignore properties and XML files. -->
   <suppress checks="[a-zA-Z0-9]*" files="\.properties" />
+  <suppress checks="[a-zA-Z0-9]*" files="\.xml" />
+  
+  <!-- Ignore files in test resources -->
+  <suppress checks="[a-zA-Z0-9]*" files="[\\/]test[\\/]resources[\\/]" />
 
 </suppressions>

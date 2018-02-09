@@ -29,7 +29,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * Fixes the produced artifacts (ZIP/JAR/WAR/EAR) to make the build reproducible.
  */
-@Mojo(name = "strip-jar", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresProject = false)
+@Mojo(name = "strip-jar", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST,
+        requiresProject = false, threadSafe = true)
 public final class StripJarMojo extends AbstractMojo
 {
     private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear" };
@@ -137,8 +138,9 @@ public final class StripJarMojo extends AbstractMojo
 
     private File[] findZipFiles(File folder)
     {
-        final File[] zipFiles = folder
-                .listFiles((dir, name) -> Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith(ext)));
+        final File[] zipFiles = folder.listFiles((dir, name) ->
+                Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith("." + ext))
+                && new File(dir, name).isFile());
         return zipFiles != null ? zipFiles : new File[0];
     }
 

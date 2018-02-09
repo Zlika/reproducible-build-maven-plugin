@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -37,9 +39,16 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
  * Strips non-reproducible data from a ZIP file. It rebuilds the ZIP file with a predictable order for the zip entries
  * and sets zip entry dates to a fixed value.
  */
-final class ZipStripper implements Stripper
+public final class ZipStripper implements Stripper
 {
-
+    // The ZipArchiveEntry.setXxxTime() methods write the time taking into account the local time zone,
+    // so we must first convert the desired timestamp value in the local time zone to have the
+    // same timestamps in the ZIP file when the project is built on another computer in a
+    // different time zone.
+    private static final long DEFAULT_ZIP_TIMESTAMP
+                = LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0).atZone(ZoneOffset.systemDefault())
+                    .toInstant().toEpochMilli();
+    
     private final Map<String, Stripper> subFilters = new HashMap<>();
 
     @Override
@@ -91,10 +100,10 @@ final class ZipStripper implements Stripper
     private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
         // Set times
-        entry.setCreationTime(FileTime.fromMillis(0));
-        entry.setLastAccessTime(FileTime.fromMillis(0));
-        entry.setLastModifiedTime(FileTime.fromMillis(0));
-        entry.setTime(0);
+        entry.setCreationTime(FileTime.fromMillis(DEFAULT_ZIP_TIMESTAMP));
+        entry.setLastAccessTime(FileTime.fromMillis(DEFAULT_ZIP_TIMESTAMP));
+        entry.setLastModifiedTime(FileTime.fromMillis(DEFAULT_ZIP_TIMESTAMP));
+        entry.setTime(DEFAULT_ZIP_TIMESTAMP);
         // Remove extended timestamps
         for (ZipExtraField field : entry.getExtraFields())
         {

@@ -9,6 +9,7 @@ ${project.name}
  Have you ever tried to compile twice the same sources with Maven and compared the hashes of the generated artifacts? They are not the same! Maven is not able to build an artifact in a real reproducible (i.e. byte-for-byte) way.
  
  This Maven plugin tries to strip "non reproducible" data from the generated artifacts. It follows the same goals as {{{https://wiki.debian.org/ReproducibleBuilds}Debian's Reproducible Builds project}} but at the modest scale of a Maven project.
+ You can also have a look at my Devoxx France 2016 talk "{{{http://zlika.github.io/presentations/devoxx_fr_2016/reproducible-builds/slides_en.html}Bit-for-bit reproducible builds with Maven}}".
  
  Using this plugin is a no-brainer: simply add it to your pom and it will try to "automagically" make the build byte-for-byte reproducible.
  
@@ -22,7 +23,7 @@ ${project.name}
  
    ** sorts ZIP entries by name,
   
-   ** removes file timestamps in ZIP entries,
+   ** replaces file timestamps in ZIP entries with a fixed value,
   
    ** removes timestamps, user names and tool versions in MANIFEST.MF,
   

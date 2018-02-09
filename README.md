@@ -12,3 +12,11 @@ Cf. http://zlika.github.io/reproducible-build-maven-plugin/
 
 * Java 8
 * Maven 3.0.0 or newer
+
+### How to compile
+
+To compile the project and run its integration tests:
+
+```
+mvn clean install -Prun-its
+```
