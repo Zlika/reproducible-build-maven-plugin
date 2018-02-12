@@ -9,7 +9,7 @@
   <name>Reproducible Build Maven Plugin</name>
   <description>This Plug-In allows to generate byte-for-byte reproducible artifacts</description>
   <url>http://zlika.github.io/reproducible-build-maven-plugin</url>
-  
+
   <inceptionYear>2015</inceptionYear>
   <licenses>
     <license>
@@ -18,26 +18,26 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  
+
   <developers>
     <developer>
       <name>Thomas Lorblanchès</name>
       <email>zlika_ese@hotmail.com</email>
     </developer>
   </developers>
-  
+
   <scm>
     <connection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</developerConnection>
     <url>https://github.com/Zlika/reproducible-build-maven-plugin</url>
     <tag>HEAD</tag>
   </scm>
-  
+
   <issueManagement>
     <system>GitHub Issues</system>
     <url>https://github.com/Zlika/reproducible-build-maven-plugin/issues</url>
   </issueManagement>
-  
+
   <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
@@ -57,7 +57,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    
+
     <!-- Maven plugin versions -->
     <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
     <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
@@ -81,37 +81,37 @@
     <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>2.20.1</maven-surefire-report-plugin.version>
     <wagon-gitsite.version>0.3.1</wagon-gitsite.version>
-    
+
     <!-- Dependency versions -->
     <commons-compress.version>1.15</commons-compress.version>
     <junit.version>4.12</junit.version>
     <maven-plugin-annotations.version>3.5</maven-plugin-annotations.version>
     <maven-plugin-api.version>3.5.2</maven-plugin-api.version>
     <plexus-utils.version>3.1.0</plexus-utils.version>
-    
+
   </properties>
 
   <dependencies>
-  
+
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>${maven-plugin-api.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>${maven-plugin-annotations.version}</version>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>${plexus-utils.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
@@ -127,18 +127,18 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
 
   <build>
-  
+
     <!-- Extensions to deploy site documentation to Github using Github's pages system.
          Cf. http://khuxtable.github.io/wagon-gitsite/ -->
     <extensions>
@@ -161,13 +161,13 @@
 
     <pluginManagement>
       <plugins>
-      
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-clean-plugin</artifactId>
           <version>${maven-clean-plugin.version}</version>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
@@ -185,7 +185,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven-surefire-plugin.version}</version>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
@@ -211,19 +211,19 @@
             <tagNameFormat>v@{project.version}</tagNameFormat>
           </configuration>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
           <version>${maven-install-plugin.version}</version>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
           <version>${maven-deploy-plugin.version}</version>
         </plugin>
-        
+
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
@@ -232,13 +232,13 @@
             <excludes><exclude>**/*HelpMojo.*</exclude></excludes>
           </configuration>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <version>${maven-site-plugin.version}</version>
         </plugin>
-        
+
         <plugin>
           <groupId>org.eluder.coveralls</groupId>
           <artifactId>coveralls-maven-plugin</artifactId>
@@ -250,7 +250,7 @@
 
       </plugins>
     </pluginManagement>
-    
+
     <plugins>
 
       <plugin>
@@ -276,7 +276,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -396,7 +396,7 @@
               </execution>
             </executions>
           </plugin>
-          
+
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -436,13 +436,13 @@
         </plugins>
       </build>
     </profile>
-    
+
     <!-- Additional goals to release the plugin -->
-    <profile> 
+    <profile>
       <id>release</id>
       <build>
         <plugins>
-          
+
           <!-- Generate source attachment -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -455,7 +455,7 @@
               </execution>
             </executions>
           </plugin>
-          
+
           <!-- Generate javadoc attachment -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -468,7 +468,7 @@
               </execution>
             </executions>
           </plugin>
-          
+
           <!-- Sign the artifacts -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -482,7 +482,7 @@
               </execution>
             </executions>
           </plugin>
-          
+
         </plugins>
       </build>
     </profile>

@@ -15,14 +15,12 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Tests for tar Stripper.
- * 
+ *
  * @author tglman
  *
  */
@@ -31,25 +29,28 @@ public class TarStripperTest
 
     /**
      * Tests stripping on a reference Tar file.
-     * 
-     * @throws IOException
-     *             in case of error on test file operations
+     *
+     * @throws IOException in case of error on test file operations
      */
     @Test
     public void testStripTar() throws IOException
     {
-        final String testTarName = "test-tar.tar";
-        final String strippedTarName = "test-tar-stripped.tar";
+        final File original = new File(this.getClass().getResource("test-tar.tar").getFile());
+        final File stripped = File.createTempFile("test-tar", ".tar");
+        stripped.deleteOnExit();
+        final File expected = new File(this.getClass().getResource("test-tar-stripped.tar").getFile());
 
-        final File inFile = new File(this.getClass().getResource(testTarName).getFile());
-        final File outFile = File.createTempFile("test-tar", "tar");
-        outFile.deleteOnExit();
-        final File expected = new File(this.getClass().getResource(strippedTarName).getFile());
+        new TarStripper().strip(original, stripped);
 
-        new TarStripper().strip(inFile, outFile);
-
-        Assert.assertArrayEquals(Files.readAllBytes(expected.toPath()), Files.readAllBytes(outFile.toPath()));
-        outFile.delete();
+        Assert.assertArrayEquals(
+            "Stripped tar does not match expected tar",
+            new TarFile(expected).entries(),
+            new TarFile(stripped).entries()
+        );
+        Assert.assertFalse(
+            "Original tar matched the stripped tar",
+            new TarFile(expected).entries().equals(new TarFile(original).entries())
+        );
     }
 
 }

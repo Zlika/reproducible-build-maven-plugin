@@ -11,3 +11,5 @@ buildNumber.properties
 /.settings/
 /bin/
 /.checkstyle
+.idea
+*.iml
