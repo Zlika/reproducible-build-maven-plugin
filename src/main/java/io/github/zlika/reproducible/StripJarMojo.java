@@ -15,11 +15,7 @@
 package io.github.zlika.reproducible;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -75,85 +71,30 @@ public final class StripJarMojo extends AbstractMojo
 
     private void strip() throws MojoExecutionException
     {
-        final File[] zipFiles = findZipFiles(outputDirectory);
-        for (File zip : zipFiles)
+        this.process(
+            this.findZipFiles(this.outputDirectory),
+            new ZipConsumer(this.overwrite)
+        );
+        this.process(
+            this.findTarFiles(this.outputDirectory),
+            new UniversalTarConsumer(this.overwrite)
+        );
+        this.process(
+            this.findTarBzFiles(this.outputDirectory),
+            new UniversalTarConsumer(this.overwrite)
+        );
+        this.process(
+            this.findTarGzFiles(this.outputDirectory),
+            new UniversalTarConsumer(this.overwrite)
+        );
+    }
+
+    private void process(final File[] files, final FileConsumer consumer) throws MojoExecutionException
+    {
+        for (final File file : files)
         {
-            getLog().info("Stripping " + zip.getAbsolutePath());
-            try
-            {
-                final File stripped = createStrippedFilename(zip);
-                ZipStripper stripper = new ZipStripper();
-                stripper.addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
-                        .addFileStripper("META-INF/maven/\\S*/pom.properties", new PomPropertiesStripper())
-                        .addFileStripper("META-INF/maven/plugin.xml", new MavenPluginToolsStripper())
-                        .addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper());
-                stripper.strip(zip, stripped);
-                if (overwrite)
-                {
-                    Files.move(stripped.toPath(), zip.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-            catch (IOException e)
-            {
-                throw new MojoExecutionException("Error when stripping " + zip.getAbsolutePath(), e);
-            }
-        }
-        final File[] tarGzFiles = findTarGzFiles(outputDirectory);
-        for (File tarGz : tarGzFiles)
-        {
-            getLog().info("Stripping " + tarGz.getAbsolutePath());
-            try
-            {
-                final File stripped = createStrippedFilename(tarGz);
-                Stripper stripper = new TarGzStripper();
-                stripper.strip(tarGz, stripped);
-                if (overwrite)
-                {
-                    Files.move(stripped.toPath(), tarGz.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-            catch (IOException e)
-            {
-                throw new MojoExecutionException("Error when stripping " + tarGz.getAbsolutePath(), e);
-            }
-        }
-        final File[] tarBzFiles = findTarBzFiles(outputDirectory);
-        for (File tarBz : tarBzFiles)
-        {
-            getLog().info("Stripping " + tarBz.getAbsolutePath());
-            try
-            {
-                final File stripped = createStrippedFilename(tarBz);
-                Stripper stripper = new TarBzStripper();
-                stripper.strip(tarBz, stripped);
-                if (overwrite)
-                {
-                    Files.move(stripped.toPath(), tarBz.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-            catch (IOException e)
-            {
-                throw new MojoExecutionException("Error when stripping " + tarBz.getAbsolutePath(), e);
-            }
-        }
-        final File[] tarFiles = findTarFiles(outputDirectory);
-        for (File tar : tarFiles)
-        {
-            getLog().info("Stripping " + tar.getAbsolutePath());
-            try
-            {
-                final File stripped = createStrippedFilename(tar);
-                Stripper stripper = new TarStripper();
-                stripper.strip(tar, stripped);
-                if (overwrite)
-                {
-                    Files.move(stripped.toPath(), tar.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-            catch (IOException e)
-            {
-                throw new MojoExecutionException("Error when stripping " + tar.getAbsolutePath(), e);
-            }
+            this.getLog().info("Stripping " + file.getAbsolutePath());
+            consumer.strip(file, this.createStrippedFilename(file));
         }
     }
 
