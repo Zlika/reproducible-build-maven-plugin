@@ -15,6 +15,7 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,6 +23,7 @@ import org.junit.Test;
  * Tests for tar Stripper.
  *
  * @author tglman
+ * @author unicolet
  *
  */
 public class TarStripperTest
@@ -42,15 +44,25 @@ public class TarStripperTest
 
         new TarStripper().strip(original, stripped);
 
+        final TarArchiveEntry[] expectedEntries = new TarFile(expected).entries();
+        Assert.assertEquals(8, expectedEntries.length);
         Assert.assertArrayEquals(
-            "Stripped tar does not match expected tar",
-            new TarFile(expected).entries(),
+            "Stripped tar should match expected tar",
+            expectedEntries,
             new TarFile(stripped).entries()
         );
         Assert.assertFalse(
-            "Original tar matched the stripped tar",
-            new TarFile(expected).entries().equals(new TarFile(original).entries())
+            "Original tar should not match the stripped tar",
+            expectedEntries.equals(new TarFile(original).entries())
         );
+        for (final TarArchiveEntry entry : expectedEntries)
+        {
+            Assert.assertEquals("user id", 1000L, entry.getLongUserId());
+            Assert.assertEquals("user name", "", entry.getUserName());
+            Assert.assertEquals("group id", 1000L, entry.getLongGroupId());
+            Assert.assertEquals("group name", "", entry.getGroupName());
+            Assert.assertEquals("modified time", 0, entry.getModTime().getTime());
+        }
     }
 
 }
