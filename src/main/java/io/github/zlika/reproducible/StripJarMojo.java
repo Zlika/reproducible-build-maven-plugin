@@ -39,6 +39,8 @@ public final class StripJarMojo extends AbstractMojo
 
     private static final String TAR_BZ_EXT = "tar.bz";
 
+    private static final String TAR_EXT = "tar";
+
     /**
      * Directory where to find zip/jar/war/ear files for stripping.
      */
@@ -103,7 +105,7 @@ public final class StripJarMojo extends AbstractMojo
             try
             {
                 final File stripped = createStrippedFilename(tarGz);
-                Stripper stripper = new TarStripper();
+                Stripper stripper = new TarGzStripper();
                 stripper.strip(tarGz, stripped);
                 if (overwrite)
                 {
@@ -134,6 +136,25 @@ public final class StripJarMojo extends AbstractMojo
                 throw new MojoExecutionException("Error when stripping " + tarBz.getAbsolutePath(), e);
             }
         }
+        final File[] tarFiles = findTarFiles(outputDirectory);
+        for (File tar : tarFiles)
+        {
+            getLog().info("Stripping " + tar.getAbsolutePath());
+            try
+            {
+                final File stripped = createStrippedFilename(tar);
+                Stripper stripper = new TarStripper();
+                stripper.strip(tar, stripped);
+                if (overwrite)
+                {
+                    Files.move(stripped.toPath(), tar.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+            catch (IOException e)
+            {
+                throw new MojoExecutionException("Error when stripping " + tar.getAbsolutePath(), e);
+            }
+        }
     }
 
     private File[] findZipFiles(File folder)
@@ -146,14 +167,20 @@ public final class StripJarMojo extends AbstractMojo
 
     private File[] findTarBzFiles(File folder)
     {
-        final File[] zipFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_BZ_EXT));
-        return zipFiles != null ? zipFiles : new File[0];
+        final File[] tbzFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_BZ_EXT));
+        return tbzFiles != null ? tbzFiles : new File[0];
     }
 
     private File[] findTarGzFiles(File folder)
     {
-        final File[] zipFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_GZ_EXT));
-        return zipFiles != null ? zipFiles : new File[0];
+        final File[] tgzFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_GZ_EXT));
+        return tgzFiles != null ? tgzFiles : new File[0];
+    }
+
+    private File[] findTarFiles(File folder)
+    {
+        final File[] tarFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_EXT));
+        return tarFiles != null ? tarFiles : new File[0];
     }
 
     private File createStrippedFilename(File originalFile)

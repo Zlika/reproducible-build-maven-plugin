@@ -31,7 +31,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Strip Tar archives of file dates and users,groups informations that are not reproducible.
- * 
+ *
  * @author tglman
  *
  */
@@ -41,7 +41,7 @@ public class TarStripper implements Stripper
     /**
      * Factory that create a new instance of tar input stream, for allow extension for different file compression
      * format.
-     * 
+     *
      * @param in
      * @return
      * @throws FileNotFoundException
@@ -57,15 +57,15 @@ public class TarStripper implements Stripper
     /**
      * Factory that create a new instance of tar output stream, for allow extension for different file compression
      * format.
-     * 
-     * 
+     *
+     *
      * @param out
      * @return
      * @throws FileNotFoundException
      *             if the file as parameter is not found
      * @throws IOException
      *             if there are error reading the file given as parameter
-     * 
+     *
      */
     protected TarArchiveOutputStream createOutputStream(File out) throws FileNotFoundException, IOException
     {
@@ -137,6 +137,14 @@ public class TarStripper implements Stripper
         entry.setUserId(1000);
         entry.setUserName("");
         entry.setGroupName("");
+        if (entry.isDirectory())
+        {
+            entry.setMode(TarArchiveEntry.DEFAULT_DIR_MODE);
+        }
+        else
+        {
+            entry.setMode(TarArchiveEntry.DEFAULT_FILE_MODE);
+        }
         return entry;
     }
 
