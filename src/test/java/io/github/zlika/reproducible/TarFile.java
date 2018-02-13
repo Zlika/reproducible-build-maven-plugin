@@ -24,7 +24,6 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 /**
  * Commodity class to handle a Tar archive file in tests.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
- * @version $Id$
  */
 public final class TarFile
 {

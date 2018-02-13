@@ -22,7 +22,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 /**
  * Process and strips ZIP (jar, war, as well) archives.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
- * @version $Id$
  */
 public final class ZipConsumer implements FileConsumer
 {

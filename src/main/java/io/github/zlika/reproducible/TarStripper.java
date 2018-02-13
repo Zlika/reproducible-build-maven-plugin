@@ -130,11 +130,9 @@ public class TarStripper implements Stripper
 
     private TarArchiveEntry filterTarEntry(TarArchiveEntry entry)
     {
-        // Set times
-        entry.setModTime(0);
-        // Remove GID and UID that are not deterministic, to evaluate though
-        entry.setGroupId(1000);
-        entry.setUserId(1000);
+        entry.setModTime(0L);
+        entry.setGroupId(0);
+        entry.setUserId(0);
         entry.setUserName("");
         entry.setGroupName("");
         if (entry.isDirectory())

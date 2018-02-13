@@ -22,7 +22,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 /**
  * Process tar formats: tar, tar.gz, tar.bz2.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
- * @version $Id$
  */
 public final class UniversalTarConsumer implements FileConsumer
 {

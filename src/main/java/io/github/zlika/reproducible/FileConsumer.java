@@ -19,7 +19,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 /**
  * A consumer implementing the logic required to strip a file.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
- * @version $Id$
  */
 interface FileConsumer
 {

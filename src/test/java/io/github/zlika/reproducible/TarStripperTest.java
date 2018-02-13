@@ -28,25 +28,6 @@ import org.junit.Test;
  */
 public class TarStripperTest
 {
-
-    /**
-     * Directory permissions mode set by TarStripper.
-     * For unknown reason, reading permissions will only return the last 3
-     * digits, rather than the full octal representation:
-     * 40755 is returned as 755 which is different from
-     * {@link TarArchiveEntry#DEFAULT_DIR_MODE}
-     */
-    private static final int DIR_MODE = 493;
-
-    /**
-     * File permissions mode set by TarStripper.
-     * For unknown reason, reading permissions will only return the last 3
-     * digits, rather than the full octal representation:
-     * 100644 is returned as 644 which is different from
-     * {@link TarArchiveEntry#DEFAULT_FILE_MODE}
-     */
-    private static final int FILE_MODE = 420;
-
     /**
      * Tests stripping on a reference Tar file.
      *
@@ -58,37 +39,31 @@ public class TarStripperTest
         final File original = new File(this.getClass().getResource("test-tar.tar").getFile());
         final File stripped = File.createTempFile("test-tar", ".tar");
         stripped.deleteOnExit();
-        final File expected = new File(this.getClass().getResource("test-tar-stripped.tar").getFile());
 
         new TarStripper().strip(original, stripped);
 
-        final TarArchiveEntry[] expectedEntries = new TarFile(expected).entries();
-        Assert.assertEquals(8, expectedEntries.length);
-        for (final TarArchiveEntry entry : expectedEntries)
+        final TarArchiveEntry[] entries = new TarFile(stripped).entries();
+        Assert.assertEquals(8, entries.length);
+        for (final TarArchiveEntry entry : entries)
         {
             final String name = entry.getName();
-            Assert.assertEquals(name + " user id", 1000L, entry.getLongUserId());
+            Assert.assertEquals(name + " user id", 0L, entry.getLongUserId());
             Assert.assertEquals(name + "user name", "", entry.getUserName());
-            Assert.assertEquals(name + "group id", 1000L, entry.getLongGroupId());
+            Assert.assertEquals(name + "group id", 0L, entry.getLongGroupId());
             Assert.assertEquals(name + "group name", "", entry.getGroupName());
             Assert.assertEquals(name + "modified time", 0, entry.getModTime().getTime());
             if (entry.isDirectory())
             {
-                Assert.assertEquals(name + " dir permissions", TarStripperTest.DIR_MODE, entry.getMode());
+                Assert.assertEquals(name + " dir permissions", TarArchiveEntry.DEFAULT_DIR_MODE, entry.getMode());
             }
             else
             {
-                Assert.assertEquals(name + " file permissions", TarStripperTest.FILE_MODE, entry.getMode());
+                Assert.assertEquals(name + " file permissions", TarArchiveEntry.DEFAULT_FILE_MODE, entry.getMode());
             }
         }
-        Assert.assertArrayEquals(
-            "Stripped tar should match expected tar",
-            expectedEntries,
-            new TarFile(stripped).entries()
-        );
         Assert.assertFalse(
             "Original tar should not match the stripped tar",
-            expectedEntries.equals(new TarFile(original).entries())
+            entries.equals(new TarFile(original).entries())
         );
     }
 
