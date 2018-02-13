@@ -17,13 +17,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import org.apache.maven.plugin.MojoExecutionException;
 
 /**
- * Process tar formats: tar, tar.gz, tar.bz2.
+ * Process tar formats: tar, tar.gz, tar.bz2 using the default configuriaton
+ * and the right tar stripper implementation.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  */
-public final class UniversalTarConsumer implements FileConsumer
+public final class SmartTarStripper implements Stripper
 {
     /**
      * Whether the original file should be overwritten.
@@ -34,26 +34,19 @@ public final class UniversalTarConsumer implements FileConsumer
      * Ctor.
      * @param overwrite Overwrite original file.
      */
-    public UniversalTarConsumer(final boolean overwrite)
+    public SmartTarStripper(final boolean overwrite)
     {
         this.overwrite = overwrite;
     }
 
     @Override
-    public void strip(final File file, final File stripped) throws MojoExecutionException
+    public void strip(final File file, final File stripped) throws IOException
     {
-        try
+        final Stripper stripper = SmartTarStripper.findImplementation(file);
+        stripper.strip(file, stripped);
+        if (this.overwrite)
         {
-            final Stripper stripper = this.findImplementation(file);
-            stripper.strip(file, stripped);
-            if (this.overwrite)
-            {
-                Files.move(stripped.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
-        }
-        catch (IOException e)
-        {
-            throw new MojoExecutionException("Error when stripping " + file.getAbsolutePath(), e);
+            Files.move(stripped.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
@@ -62,7 +55,7 @@ public final class UniversalTarConsumer implements FileConsumer
      * @param file File to strip.
      * @return Stripper implementation.
      */
-    private Stripper findImplementation(final File file)
+    private static Stripper findImplementation(final File file)
     {
         final String name = file.getName();
         Stripper impl = new TarStripper();

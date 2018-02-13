@@ -15,6 +15,7 @@
 package io.github.zlika.reproducible;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -65,36 +66,48 @@ public final class StripJarMojo extends AbstractMojo
         }
         else
         {
-            strip();
+            this.process(
+                this.findZipFiles(this.outputDirectory),
+                new DefaultZipStripper(new ZipStripper(), this.overwrite)
+            );
+            this.process(
+                this.findTarFiles(this.outputDirectory),
+                new SmartTarStripper(this.overwrite)
+            );
+            this.process(
+                this.findTarBzFiles(this.outputDirectory),
+                new SmartTarStripper(this.overwrite)
+            );
+            this.process(
+                this.findTarGzFiles(this.outputDirectory),
+                new SmartTarStripper(this.overwrite)
+            );
         }
     }
 
-    private void strip() throws MojoExecutionException
-    {
-        this.process(
-            this.findZipFiles(this.outputDirectory),
-            new ZipConsumer(this.overwrite)
-        );
-        this.process(
-            this.findTarFiles(this.outputDirectory),
-            new UniversalTarConsumer(this.overwrite)
-        );
-        this.process(
-            this.findTarBzFiles(this.outputDirectory),
-            new UniversalTarConsumer(this.overwrite)
-        );
-        this.process(
-            this.findTarGzFiles(this.outputDirectory),
-            new UniversalTarConsumer(this.overwrite)
-        );
-    }
-
-    private void process(final File[] files, final FileConsumer consumer) throws MojoExecutionException
+    /**
+     * Perform the actual stripping for a set of files using the supplied
+     * Stripper implementation.
+     * @param files The files to process.
+     * @param stripper The stripper to use.
+     * @throws MojoExecutionException On error.
+     */
+    private void process(final File[] files, final Stripper stripper) throws MojoExecutionException
     {
         for (final File file : files)
         {
             this.getLog().info("Stripping " + file.getAbsolutePath());
-            consumer.strip(file, this.createStrippedFilename(file));
+            try
+            {
+                stripper.strip(file, this.createStrippedFilename(file));
+            }
+            catch (final IOException ioe)
+            {
+                throw new MojoExecutionException(
+                    String.format("Error stripping file %s:", file.getAbsolutePath()),
+                    ioe
+                );
+            }
         }
     }
 
