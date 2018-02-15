@@ -28,25 +28,23 @@ public class ZipStripperTest
 {
     /**
      * Tests stripping on a reference JAR file.
-     * 
-     * @throws IOException
-     *             in case of error on test file operations
+     * @throws IOException 
      */
     @Test
     public void testStripZip() throws IOException
     {
         final String testJarName = "test-jar.jar";
         final String strippedJarName = "test-jar-stripped.jar";
-
+        
         final File inFile = new File(this.getClass().getResource(testJarName).getFile());
         final File outFile = File.createTempFile("test-jar", null);
         outFile.deleteOnExit();
         final File expected = new File(this.getClass().getResource(strippedJarName).getFile());
-
+        
         new ZipStripper()
-                .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
-                .addFileStripper("META-INF/\\S*/pom.properties", new PomPropertiesStripper())
-                .strip(inFile, outFile);
+            .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
+            .addFileStripper("META-INF/\\S*/pom.properties", new PomPropertiesStripper())
+            .strip(inFile, outFile);
 
         Assert.assertArrayEquals(Files.readAllBytes(expected.toPath()), Files.readAllBytes(outFile.toPath()));
         outFile.delete();
