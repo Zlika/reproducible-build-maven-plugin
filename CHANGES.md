@@ -3,6 +3,7 @@ Next Release (0.5)
 Features
 --------
 * Sorts entries in MANIFEST.MF file (workaround for maven-archiver bug [MSHARED-511](https://issues.apache.org/jira/browse/MSHARED-511)).
+* [#4](https://github.com/Zlika/reproducible-build-maven-plugin/issues/4): Strips also tar/tar.gz/tar.bz archives - [@unicolet](https://github.com/unicolet), [@tglman](https://github.com/tglman)
 
 Release 0.4
 ===========
