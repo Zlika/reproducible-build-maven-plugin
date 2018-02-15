@@ -16,10 +16,7 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -34,21 +31,26 @@ import org.apache.maven.plugins.annotations.Parameter;
 public final class StripJarMojo extends AbstractMojo
 {
     private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear" };
-    
+
+    private static final String TAR_GZ_EXT = "tar.gz";
+
+    private static final String TAR_BZ_EXT = "tar.bz2";
+
+    private static final String TAR_EXT = "tar";
+
     /**
      * Directory where to find zip/jar/war/ear files for stripping.
      */
     @Parameter(defaultValue = "${project.build.directory}", property = "reproducible.outputDirectory", required = true)
     private File outputDirectory;
-    
+
     /**
-     * By default, the stripping is done in-place.
-     * To create new files without changing the original ones, set this parameter to "false".
-     * The new files are named by appending "-stripped" to the original file name.
+     * By default, the stripping is done in-place. To create new files without changing the original ones, set this
+     * parameter to "false". The new files are named by appending "-stripped" to the original file name.
      */
     @Parameter(defaultValue = "true", property = "reproducible.overwrite")
     private boolean overwrite;
-    
+
     /**
      * If true, skips the execution of the goal.
      */
@@ -64,37 +66,51 @@ public final class StripJarMojo extends AbstractMojo
         }
         else
         {
-            strip();
+            this.process(
+                this.findZipFiles(this.outputDirectory),
+                new DefaultZipStripper(new ZipStripper(), this.overwrite)
+            );
+            this.process(
+                this.findTarFiles(this.outputDirectory),
+                new SmartTarStripper(this.overwrite)
+            );
+            this.process(
+                this.findTarBzFiles(this.outputDirectory),
+                new SmartTarStripper(this.overwrite)
+            );
+            this.process(
+                this.findTarGzFiles(this.outputDirectory),
+                new SmartTarStripper(this.overwrite)
+            );
         }
     }
-    
-    private void strip() throws MojoExecutionException
+
+    /**
+     * Perform the actual stripping for a set of files using the supplied
+     * Stripper implementation.
+     * @param files The files to process.
+     * @param stripper The stripper to use.
+     * @throws MojoExecutionException On error.
+     */
+    private void process(final File[] files, final Stripper stripper) throws MojoExecutionException
     {
-        final File[] zipFiles = findZipFiles(outputDirectory);
-        for (File zip : zipFiles)
+        for (final File file : files)
         {
-            getLog().info("Stripping " + zip.getAbsolutePath());
+            this.getLog().info("Stripping " + file.getAbsolutePath());
             try
             {
-                final File stripped = createStrippedFilename(zip);
-                new ZipStripper()
-                    .addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
-                    .addFileStripper("META-INF/maven/\\S*/pom.properties", new PomPropertiesStripper())
-                    .addFileStripper("META-INF/maven/plugin.xml", new MavenPluginToolsStripper())
-                    .addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper())
-                    .strip(zip, stripped);
-                if (overwrite)
-                {
-                    Files.move(stripped.toPath(), zip.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
+                stripper.strip(file, this.createStrippedFilename(file));
             }
-            catch (IOException e)
+            catch (final IOException ioe)
             {
-                throw new MojoExecutionException("Error when stripping " + zip.getAbsolutePath(), e);
+                throw new MojoExecutionException(
+                    String.format("Error stripping file %s:", file.getAbsolutePath()),
+                    ioe
+                );
             }
         }
     }
-    
+
     private File[] findZipFiles(File folder)
     {
         final File[] zipFiles = folder.listFiles((dir, name) ->
@@ -102,12 +118,30 @@ public final class StripJarMojo extends AbstractMojo
                 && new File(dir, name).isFile());
         return zipFiles != null ? zipFiles : new File[0];
     }
-    
+
+    private File[] findTarBzFiles(File folder)
+    {
+        final File[] tbzFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_BZ_EXT));
+        return tbzFiles != null ? tbzFiles : new File[0];
+    }
+
+    private File[] findTarGzFiles(File folder)
+    {
+        final File[] tgzFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_GZ_EXT));
+        return tgzFiles != null ? tgzFiles : new File[0];
+    }
+
+    private File[] findTarFiles(File folder)
+    {
+        final File[] tarFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(TAR_EXT));
+        return tarFiles != null ? tarFiles : new File[0];
+    }
+
     private File createStrippedFilename(File originalFile)
     {
         final String filenameWithoutExt = FileUtils.getNameWithoutExtension(originalFile);
         final String ext = FileUtils.getFileExtension(originalFile);
         return new File(originalFile.getParentFile(), filenameWithoutExt + "-stripped"
-                                                        + (ext.isEmpty() ? "" : ".") + ext);
+                + (ext.isEmpty() ? "" : ".") + ext);
     }
 }
