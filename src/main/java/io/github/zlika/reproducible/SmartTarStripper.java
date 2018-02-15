@@ -63,7 +63,7 @@ public final class SmartTarStripper implements Stripper
         {
             impl = new TarGzStripper();
         }
-        if (name.endsWith(".tar.bz"))
+        if (name.endsWith(".tar.bz2"))
         {
             impl = new TarBzStripper();
         }

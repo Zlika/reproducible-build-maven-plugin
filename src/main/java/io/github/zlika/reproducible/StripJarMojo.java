@@ -34,7 +34,7 @@ public final class StripJarMojo extends AbstractMojo
 
     private static final String TAR_GZ_EXT = "tar.gz";
 
-    private static final String TAR_BZ_EXT = "tar.bz";
+    private static final String TAR_BZ_EXT = "tar.bz2";
 
     private static final String TAR_EXT = "tar";
 
