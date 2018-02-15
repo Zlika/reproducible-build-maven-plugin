@@ -43,7 +43,9 @@
                         <addMavenDescriptor>false</addMavenDescriptor>
                     </archive>
                     <descriptors>
-                        <descriptor>assembly.xml</descriptor>
+                        <descriptor>tar.xml</descriptor>
+                        <descriptor>targz.xml</descriptor>
+                        <descriptor>tarbz2.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>
