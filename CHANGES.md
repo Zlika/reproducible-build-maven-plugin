@@ -3,9 +3,9 @@ Next Release (0.5)
 Features
 --------
 * Sorts entries in MANIFEST.MF file (workaround for maven-archiver bug [MSHARED-511](https://issues.apache.org/jira/browse/MSHARED-511)).
-* [#4](https://github.com/Zlika/reproducible-build-maven-plugin/issues/4): Strips also tar/tar.gz/tar.bz archives - [@unicolet](https://github.com/unicolet), [@tglman](https://github.com/tglman)
+* [#4](https://github.com/Zlika/reproducible-build-maven-plugin/issues/4): Strips also tar/tar.gz/tar.bz archives - [@unicolet](https://github.com/unicolet), [@tglman](https://github.com/tglman).
 
-Release 0.4
+Release 0.4 (2017/10/27)
 ===========
 Bug Fixes
 ---------
@@ -17,7 +17,7 @@ Non-functional changes
 * Add "Automatic-Module-Name" in Manifest.
 * The plugin can now be built with Java 9.
 
-Release 0.3
+Release 0.3 (2017/08/10)
 ===========
 Bug Fixes
 ---------
@@ -33,7 +33,7 @@ Non-functional changes
 ----------------------
 * Upgrade commons-compress to avoid reflection hack.
 
-Release 0.2
+Release 0.2 (2015/10/06)
 ===========
 Bug Fixes
 ---------
@@ -43,7 +43,7 @@ Features
 --------
 * New strip-jaxb goal to normalize ObjectFactory.java files produced by JAXB/xjc.
 
-Release 0.1
+Release 0.1 (2015/10/01)
 ===========
 First release for tests.
 Features
