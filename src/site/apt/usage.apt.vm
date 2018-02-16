@@ -62,3 +62,65 @@ Usage
   ...
 </project>
 +-----+
+
+* Make reproducible archives with maven-assembly-plugin
+
+  If you use maven-assembly-plugin to create a ZIP/TAR/TAR.GZ/TAR.BZ archive during your build,
+  you need to execute the <<<strip-jar>>> goal twice, one before the maven-assembly-plugin <<<single>>> goal
+  (to strip the main artifact of the build before inclusion in the archive),
+  and a second time after the maven-assembly-plugin <<<single>>> goal
+  (to strip the non-reproducible elements of the archive format itself).
+  
+  <<NOTE:>> <When several plugins/goals are defined to run during the same phase,
+  Maven runs them in their declaration order in the pom, so you must declare
+  reproducible-build-maven-plugin BEFORE maven-assembly-plugin.>
+
++-----+package
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>strip-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>strip-jar</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>strip-archive</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>strip-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>      
+    </plugins>
+  </build>
+  ...
+</project>
++-----+

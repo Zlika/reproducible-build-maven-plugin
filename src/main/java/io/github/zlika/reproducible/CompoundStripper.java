@@ -58,9 +58,9 @@ final class CompoundStripper implements Stripper
         }
         finally
         {
-            for (File tmpFile : tmpFiles)
+            for (File file : tmpFiles)
             {
-                tmpFile.delete();
+                Files.delete(file.toPath());
             }
         }
     }

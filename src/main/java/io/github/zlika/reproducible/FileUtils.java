@@ -15,6 +15,8 @@
 package io.github.zlika.reproducible;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Utility class.
@@ -47,5 +49,22 @@ final class FileUtils
         final String filename = file.getName();
         final int index = filename.lastIndexOf('.');
         return (index < 0) ? "" : filename.substring(index + 1);
+    }
+    
+    /**
+     * Creates the directory and if necessary the non-existent parent directories.
+     * This method uses File.mkdirs() to create the directory, but throws
+     * an IOException in case of error instead of returning a boolean.
+     * No exception is thrown if the directory already exists.
+     * @param folder the folder to be created.
+     * @throws IOException if the folder cannot be created.
+     */
+    public static void mkdirs(File folder) throws IOException
+    {
+        Objects.requireNonNull(folder);
+        if (!folder.exists() && !folder.mkdirs())
+        {
+            throw new IOException("Cannot create folder " + folder);
+        }
     }
 }

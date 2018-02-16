@@ -23,7 +23,7 @@ import java.nio.file.StandardCopyOption;
  * and the right tar stripper implementation.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  */
-public final class SmartTarStripper implements Stripper
+final class SmartTarStripper implements Stripper
 {
     /**
      * Whether the original file should be overwritten.

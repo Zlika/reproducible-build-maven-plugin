@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Strip Tar archives of file dates and users,groups informations that are not reproducible.
@@ -78,9 +77,9 @@ public class TarStripper implements Stripper
         final Path tmp = Files.createTempDirectory("tmp-" + in.getName());
 
         List<TarArchiveEntry> sortedNames = new ArrayList<>();
-        try (final TarArchiveInputStream tar = createInputStream(in))
+        try (final TarArchiveInputStream tar = createInputStream(in);
+             final TarArchiveOutputStream tout = createOutputStream(out))
         {
-
             TarArchiveEntry entry;
             while ((entry = tar.getNextTarEntry()) != null)
             {
@@ -88,38 +87,38 @@ public class TarStripper implements Stripper
                 File copyTo = new File(tmp.toFile(), entry.getName());
                 if (entry.isDirectory())
                 {
-                    copyTo.mkdirs();
+                    FileUtils.mkdirs(copyTo);
                 }
                 else
                 {
                     File destParent = copyTo.getParentFile();
-                    destParent.mkdirs();
+                    FileUtils.mkdirs(destParent);
                     Files.copy(tar, copyTo.toPath());
                 }
             }
-        }
-        sortedNames = sortTarEntries(sortedNames);
-        try (final TarArchiveOutputStream tout = createOutputStream(out))
-        {
-            for (TarArchiveEntry entry : sortedNames)
+            sortedNames = sortTarEntries(sortedNames);
+            for (TarArchiveEntry sortedEntry : sortedNames)
             {
-                File copyFrom = new File(tmp.toFile(), entry.getName());
-                if (!entry.isDirectory())
+                File copyFrom = new File(tmp.toFile(), sortedEntry.getName());
+                if (!sortedEntry.isDirectory())
                 {
                     final byte[] fileContent = Files.readAllBytes(copyFrom.toPath());
-                    entry.setSize(fileContent.length);
-                    tout.putArchiveEntry(filterTarEntry(entry));
+                    sortedEntry.setSize(fileContent.length);
+                    tout.putArchiveEntry(filterTarEntry(sortedEntry));
                     tout.write(fileContent);
                     tout.closeArchiveEntry();
                 }
                 else
                 {
-                    tout.putArchiveEntry(filterTarEntry(entry));
+                    tout.putArchiveEntry(filterTarEntry(sortedEntry));
                     tout.closeArchiveEntry();
                 }
             }
         }
-        FileUtils.deleteDirectory(tmp.toFile());
+        finally
+        {
+            org.codehaus.plexus.util.FileUtils.deleteDirectory(tmp.toFile());
+        }
     }
 
     private List<TarArchiveEntry> sortTarEntries(List<TarArchiveEntry> sortedNames)
@@ -145,5 +144,4 @@ public class TarStripper implements Stripper
         }
         return entry;
     }
-
 }

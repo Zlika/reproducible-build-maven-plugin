@@ -23,7 +23,7 @@ import java.nio.file.StandardCopyOption;
  * supplying a default configuration.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  */
-public final class DefaultZipStripper implements Stripper
+final class DefaultZipStripper implements Stripper
 {
     /**
      * Whether the original file should be overwritten.
@@ -35,7 +35,7 @@ public final class DefaultZipStripper implements Stripper
     private final ZipStripper stripper;
 
     /**
-     * Ctor.
+     * Constructor.
      * @param stripper The ZipStripper to wrap with default config.
      * @param overwrite Overwrite original file.
      */

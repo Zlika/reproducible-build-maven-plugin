@@ -48,10 +48,10 @@ public class TarStripperTest
         {
             final String name = entry.getName();
             Assert.assertEquals(name + " user id", 0L, entry.getLongUserId());
-            Assert.assertEquals(name + "user name", "", entry.getUserName());
-            Assert.assertEquals(name + "group id", 0L, entry.getLongGroupId());
-            Assert.assertEquals(name + "group name", "", entry.getGroupName());
-            Assert.assertEquals(name + "modified time", 0, entry.getModTime().getTime());
+            Assert.assertEquals(name + " user name", "", entry.getUserName());
+            Assert.assertEquals(name + " group id", 0L, entry.getLongGroupId());
+            Assert.assertEquals(name + " group name", "", entry.getGroupName());
+            Assert.assertEquals(name + " modified time", 0, entry.getModTime().getTime());
             if (entry.isDirectory())
             {
                 Assert.assertEquals(name + " dir permissions", TarArchiveEntry.DEFAULT_DIR_MODE, entry.getMode());
