@@ -65,7 +65,7 @@ Usage
 
 * Make reproducible archives with maven-assembly-plugin
 
-  If you use maven-assembly-plugin to create a ZIP/TAR/TAR.GZ/TAR.BZ archive during your build,
+  If you use maven-assembly-plugin to create a ZIP/TAR/TAR.GZ/TAR.BZ2 archive during your build,
   you need to execute the <<<strip-jar>>> goal twice, one before the maven-assembly-plugin <<<single>>> goal
   (to strip the main artifact of the build before inclusion in the archive),
   and a second time after the maven-assembly-plugin <<<single>>> goal
