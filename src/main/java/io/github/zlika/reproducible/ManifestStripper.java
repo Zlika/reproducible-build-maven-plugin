@@ -16,7 +16,6 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
 
 /**
  * Strips non-reproducible data from MANIFEST files.
@@ -31,26 +30,6 @@ import java.util.Comparator;
  */
 public final class ManifestStripper implements Stripper
 {
-    private static final Comparator<String> MANIFEST_ENTRY_COMPARATOR = new Comparator<String>()
-        {
-            @Override
-            public int compare(String o1, String o2)
-            {
-                if (o1.startsWith("Manifest-Version") || o2.trim().isEmpty())
-                {
-                    return -1;
-                }
-                else if (o2.startsWith("Manifest-Version") || o1.trim().isEmpty())
-                {
-                    return 1;
-                }
-                else
-                {
-                    return o1.compareTo(o2);
-                }
-            }
-        };
-    
     @Override
     public void strip(File in, File out) throws IOException
     {
@@ -61,7 +40,7 @@ public final class ManifestStripper implements Stripper
             .addPredicate(s -> s.startsWith("Build-Date"))
             .addPredicate(s -> s.startsWith("Build-Time"))
             .addPredicate(s -> s.startsWith("Bnd-LastModified"));
-        final SortTextFileStripper s2 = new SortTextFileStripper(MANIFEST_ENTRY_COMPARATOR);
+        final SortManifestFileStripper s2 = new SortManifestFileStripper();
         new CompoundStripper(s1, s2).strip(in, out);
     }
 }

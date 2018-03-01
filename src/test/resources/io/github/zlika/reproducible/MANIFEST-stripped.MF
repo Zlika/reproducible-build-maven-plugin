@@ -1,2 +1,4 @@
 Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
+Multiline-Entry: blabla, blablo,
+ blibli, blublu
