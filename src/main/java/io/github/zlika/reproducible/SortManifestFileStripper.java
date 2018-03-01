@@ -21,9 +21,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Sorts a MANIFEST file by attribute.
@@ -58,23 +59,53 @@ final class SortManifestFileStripper implements Stripper
         try (final BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(out), StandardCharsets.UTF_8)))
         {
-            parseAttributes(lines)
-                .forEach(s ->
-                {
-                    try
-                    {
-                        writer.write(s);
-                    }
-                    catch (IOException e)
-                    {
-                    }
-                });
+            final String sortedManifest = sortManifestSections(lines).stream()
+                                            .collect(Collectors.joining("\r\n"));
+            try
+            {
+                writer.write(sortedManifest + "\r\n");
+            }
+            catch (IOException e)
+            {
+            }
         }
     }
     
-    private TreeSet<String> parseAttributes(List<String> lines)
+    private List<String> sortManifestSections(List<String> lines)
     {
-        final TreeSet<String> attributes = new TreeSet<>(MANIFEST_ENTRY_COMPARATOR);
+        final List<List<String>> sections = new ArrayList<>();
+        List<String> currentSection = new ArrayList<>();
+        for (String line : lines)
+        {
+            // New section?
+            if (line.trim().isEmpty())
+            {
+                if (!currentSection.isEmpty())
+                {
+                    sections.add(currentSection);
+                    currentSection = new ArrayList<>();
+                }
+            }
+            else
+            {
+                currentSection.add(line);
+            }
+        }
+        if (!currentSection.isEmpty())
+        {
+            sections.add(currentSection);
+        }
+        
+        return sections.stream()
+                        .map(list -> sortAttributes(list))
+                        .map(list -> String.join("", list))
+                        .sorted(MANIFEST_ENTRY_COMPARATOR)
+                        .collect(Collectors.toList());
+    }
+    
+    private List<String> sortAttributes(List<String> lines)
+    {
+        final List<String> attributes = new ArrayList<>();
         String currentAttribute = "";
         for (String line : lines)
         {
@@ -87,6 +118,7 @@ final class SortManifestFileStripper implements Stripper
                 if (!currentAttribute.isEmpty())
                 {
                     attributes.add(currentAttribute);
+                    currentAttribute = "";
                 }
                 currentAttribute = line + "\r\n";
             }
@@ -95,6 +127,7 @@ final class SortManifestFileStripper implements Stripper
         {
             attributes.add(currentAttribute);
         }
+        attributes.sort(MANIFEST_ENTRY_COMPARATOR);
         return attributes;
     }
 }
