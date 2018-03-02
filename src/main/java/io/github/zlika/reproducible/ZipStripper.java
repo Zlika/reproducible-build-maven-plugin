@@ -22,6 +22,7 @@ import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,39 @@ public final class ZipStripper implements Stripper
     private static final long DEFAULT_ZIP_TIMESTAMP
                 = LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0).atZone(ZoneOffset.systemDefault())
                     .toInstant().toEpochMilli();
+    
+    /**
+     * Comparator used to sort the files in the ZIP file.
+     * This is mostly an alphabetical order comparator, with the exception that
+     * META-INF/ and META-INF/MANIFEST.MF must be the 2 first entries (if they exist)
+     * because this is required by some tools
+     * (cf. https://github.com/Zlika/reproducible-build-maven-plugin/issues/16).
+     */
+    private static final Comparator<String> MANIFEST_FILE_SORT_COMPARATOR = new Comparator<String>()
+    {
+        // CHECKSTYLE IGNORE LINE: ReturnCount
+        @Override
+        public int compare(String o1, String o2)
+        {
+            if ("META-INF/".equals(o1))
+            {
+                return -1;
+            }
+            if ("META-INF/".equals(o2))
+            {
+                return 1;
+            }
+            if ("META-INF/MANIFEST.MF".equals(o1))
+            {
+                return -1;
+            }
+            if ("META-INF/MANIFEST.MF".equals(o2))
+            {
+                return 1;
+            }
+            return o1.compareTo(o2);
+        }
+    };
     
     private final Map<String, Stripper> subFilters = new HashMap<>();
     
@@ -117,7 +151,7 @@ public final class ZipStripper implements Stripper
     {
         return Collections.list(entries).stream()
                 .map(e -> e.getName())
-                .sorted()
+                .sorted(MANIFEST_FILE_SORT_COMPARATOR)
                 .collect(Collectors.toList());
     }
     
