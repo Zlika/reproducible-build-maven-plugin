@@ -33,14 +33,25 @@ final class SortManifestFileStripper implements Stripper
 {
     private static final Comparator<String> MANIFEST_ENTRY_COMPARATOR = new Comparator<String>()
     {
+        // CHECKSTYLE IGNORE LINE: ReturnCount
         @Override
         public int compare(String o1, String o2)
         {
-            if (o1.startsWith("Manifest-Version") || o2.trim().isEmpty())
+            if (o1.startsWith("Manifest-Version:"))
             {
                 return -1;
             }
-            else if (o2.startsWith("Manifest-Version") || o1.trim().isEmpty())
+            else if (o2.startsWith("Manifest-Version:"))
+            {
+                return 1;
+            }
+            // From the "JAR File Specification":
+            // Each section must start with an attribute with the name as "Name"
+            else if (o1.startsWith("Name:") && !o2.startsWith("Name:"))
+            {
+                return -1;
+            }
+            else if (o2.startsWith("Name:") && !o2.startsWith("Name:"))
             {
                 return 1;
             }
