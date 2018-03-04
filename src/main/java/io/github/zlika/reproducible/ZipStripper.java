@@ -53,7 +53,7 @@ public final class ZipStripper implements Stripper
     /**
      * Comparator used to sort the files in the ZIP file.
      * This is mostly an alphabetical order comparator, with the exception that
-     * META-INF/ and META-INF/MANIFEST.MF must be the 2 first entries (if they exist)
+     * META-INF/MANIFEST.MF and META-INF/ must be the 2 first entries (if they exist)
      * because this is required by some tools
      * (cf. https://github.com/Zlika/reproducible-build-maven-plugin/issues/16).
      */
@@ -63,19 +63,19 @@ public final class ZipStripper implements Stripper
         @Override
         public int compare(String o1, String o2)
         {
-            if ("META-INF/".equals(o1))
-            {
-                return -1;
-            }
-            if ("META-INF/".equals(o2))
-            {
-                return 1;
-            }
             if ("META-INF/MANIFEST.MF".equals(o1))
             {
                 return -1;
             }
             if ("META-INF/MANIFEST.MF".equals(o2))
+            {
+                return 1;
+            }
+            if ("META-INF/".equals(o1))
+            {
+                return -1;
+            }
+            if ("META-INF/".equals(o2))
             {
                 return 1;
             }
