@@ -1,5 +1,9 @@
-Next Release (0.6)
+Next Release 0.5.1
 ==================
+Bug Fixes
+---------
+* [#15](https://github.com/Zlika/reproducible-build-maven-plugin/issues/15): Take into account multi-line attributes and sections when sorting MANIFEST.MF files.
+* [#16](https://github.com/Zlika/reproducible-build-maven-plugin/issues/16): Some tools require META-INF/MANIFEST.MF to be the first file in the archive.
 
 Release 0.5 (2018/02/17)
 ===========
