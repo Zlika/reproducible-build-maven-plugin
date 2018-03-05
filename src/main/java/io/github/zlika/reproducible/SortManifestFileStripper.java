@@ -78,7 +78,7 @@ final class SortManifestFileStripper implements Stripper
         for (String line : lines)
         {
             // New section?
-            if (line.trim().isEmpty())
+            if (line.isEmpty())
             {
                 if (!currentSection.isEmpty())
                 {
