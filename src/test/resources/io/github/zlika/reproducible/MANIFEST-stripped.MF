@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
-Description: This is a dummy description with 2 trailing white spaces 
+Description: This is a dummy description with 2 trailing white spaces
   
 Import-Package: org.eclipse.core.runtime;version="[3.4,4)";resolution:
  =optional,org.apache.commons.logging;resolution:=optional;version="[1
@@ -8,6 +8,12 @@ Import-Package: org.eclipse.core.runtime;version="[3.4,4)";resolution:
  n:=optional,org.eclipse.osgi.service.datalocation;version="[1.3,2)";r
  esolution:=optional,org.osgi.framework;version="[1.7,2)";resolution:=
  optional
+
+Name: com/acme/fonts/
+Implementation-Title: com.acme.fonts
+Implementation-Vendor: Acme, Inc
+Specification-Title: A font extension
+Specification-Vendor: ACME, Inc.
 
 Name: foo/bar/a
 Sealed: false
