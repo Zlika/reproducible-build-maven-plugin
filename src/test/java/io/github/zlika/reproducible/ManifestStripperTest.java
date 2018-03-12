@@ -34,15 +34,14 @@ public class ManifestStripperTest
     public void testStripManifest() throws IOException
     {
         final File out = File.createTempFile("manifest", null);
-        //out.deleteOnExit();
+        out.deleteOnExit();
 
         new ManifestStripper().strip(new File(this.getClass().getResource("MANIFEST.MF").getFile()), out);
 
         final byte[] expected = Files.readAllBytes(new File(
                                     this.getClass().getResource("MANIFEST-stripped.MF").getFile()).toPath());
         final byte[] actual = Files.readAllBytes(out.toPath());
-        System.out.println("-"+new String(actual)+"-");
         Assert.assertArrayEquals(expected, actual);
-        //out.delete();
+        out.delete();
     }
 }
