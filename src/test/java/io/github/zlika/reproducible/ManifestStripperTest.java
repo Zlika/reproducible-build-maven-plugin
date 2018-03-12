@@ -28,7 +28,7 @@ public class ManifestStripperTest
 {
     /**
      * Tests stripping on a reference Manifest file.
-     * @throws IOException
+     * @throws IOException On error.
      */
     @Test
     public void testStripManifest() throws IOException
