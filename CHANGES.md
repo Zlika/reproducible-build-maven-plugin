@@ -1,3 +1,9 @@
+Release 0.5.2 (2018/03/13)
+=============
+Bug Fixes
+---------
+* [#15](https://github.com/Zlika/reproducible-build-maven-plugin/issues/15): Fix another bug during sorting of MANIFEST.MF files - [@unicolet](https://github.com/unicolet).
+
 Release 0.5.1 (2018/03/08)
 =============
 Bug Fixes
