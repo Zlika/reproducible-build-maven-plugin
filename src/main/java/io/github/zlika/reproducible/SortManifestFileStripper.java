@@ -51,7 +51,7 @@ final class SortManifestFileStripper implements Stripper
             {
                 return -1;
             }
-            else if (o2.startsWith("Name:") && !o2.startsWith("Name:"))
+            else if (o2.startsWith("Name:") && !o1.startsWith("Name:"))
             {
                 return 1;
             }

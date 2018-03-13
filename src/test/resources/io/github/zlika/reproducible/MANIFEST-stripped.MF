@@ -9,6 +9,12 @@ Import-Package: org.eclipse.core.runtime;version="[3.4,4)";resolution:
  esolution:=optional,org.osgi.framework;version="[1.7,2)";resolution:=
  optional
 
+Name: com/acme/fonts/
+Implementation-Title: com.acme.fonts
+Implementation-Vendor: Acme, Inc
+Specification-Title: A font extension
+Specification-Vendor: ACME, Inc.
+
 Name: foo/bar/a
 Sealed: false
 

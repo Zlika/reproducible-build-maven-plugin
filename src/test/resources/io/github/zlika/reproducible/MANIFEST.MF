@@ -20,3 +20,9 @@ Sealed: false
 
 Name: foo/bar/baz/
 Sealed: true
+
+Name: com/acme/fonts/
+Specification-Title: A font extension
+Specification-Vendor: ACME, Inc.
+Implementation-Title: com.acme.fonts
+Implementation-Vendor: Acme, Inc
