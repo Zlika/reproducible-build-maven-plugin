@@ -61,12 +61,12 @@ final class SortManifestFileStripper implements Stripper
             }
         }
     };
-
+    
     @Override
     public void strip(File in, File out) throws IOException
     {
         final List<String> lines = Files.readAllLines(in.toPath(), StandardCharsets.UTF_8);
-
+        
         try (final BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(out), StandardCharsets.UTF_8)))
         {
@@ -81,7 +81,7 @@ final class SortManifestFileStripper implements Stripper
             }
         }
     }
-
+    
     private List<String> sortManifestSections(List<String> lines)
     {
         final List<List<String>> sections = new ArrayList<>();
@@ -106,14 +106,14 @@ final class SortManifestFileStripper implements Stripper
         {
             sections.add(currentSection);
         }
-
+        
         return sections.stream()
                         .map(list -> sortAttributes(list))
                         .map(list -> String.join("", list))
                         .sorted(MANIFEST_ENTRY_COMPARATOR)
                         .collect(Collectors.toList());
     }
-
+    
     private List<String> sortAttributes(List<String> lines)
     {
         final List<String> attributes = new ArrayList<>();
