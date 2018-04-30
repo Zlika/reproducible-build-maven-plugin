@@ -75,7 +75,7 @@ Usage
   Maven runs them in their declaration order in the pom, so you must declare
   reproducible-build-maven-plugin BEFORE maven-assembly-plugin.>
 
-+-----+package
++-----+
 <project>
   ...
   <build>
@@ -125,94 +125,74 @@ Usage
 </project>
 +-----+
 
-* Use last commit time as timestamp for zip (jar) entries (since 0.5.3)
+* Use last commit time as timestamp for zip (jar) entries (since version 0.6)
 
 +-----+
 <project>
   ...
-  <profiles>
-    <profile>
-      <id>reproducibleBuild</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-        <!-- Plugin requires JDK 1.8+ -->
-        <jdk>[1.8,1.9)</jdk>
-        <file>
-          <exists>${basedir}/.git</exists>
-        </file>
-        <!-- Reproducible build may be necessary only on condition, e.g. for release build -->
-          <!-- <property>
-            <name>releaseBuild</name>
-            <value>true</value>
-          </property> -->
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>pl.project13.maven</groupId>
-            <artifactId>git-commit-id-plugin</artifactId>
-            <version>2.2.4</version>
-            <executions>
-              <execution>
-                <id>retrieve-git-info</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>revision</goal>
-                </goals>
-              </execution>
-            </executions>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>retrieve-git-info</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <injectAllReactorProjects>true</injectAllReactorProjects>
+          <runOnlyOnce>true</runOnlyOnce>
+          <skipPoms>false</skipPoms>
+          <dateFormat>yyyyMMddHHmmss</dateFormat>
+          <dateFormatTimeZone>UTC</dateFormatTimeZone>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Last-Commit-Id>${git.commit.id}</Last-Commit-Id>
+              <Last-Commit-Time>${git.commit.time}</Last-Commit-Time>
+              <Reproducible-Build>true</Reproducible-Build>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>strip-jaxb</id>
+            <goals>
+              <goal>strip-jaxb</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>strip-jar</id>
+            <goals>
+              <goal>strip-jar</goal>
+            </goals>
             <configuration>
-              <!-- <verbose>true</verbose> -->
-              <injectAllReactorProjects>true</injectAllReactorProjects>
-              <runOnlyOnce>true</runOnlyOnce>
-              <skipPoms>false</skipPoms>
-              <dateFormat>yyyyMMddHHmmss</dateFormat>
-              <dateFormatTimeZone>UTC</dateFormatTimeZone>
+              <zipDateTime>${git.commit.time}</zipDateTime>
+              <!-- Set custom date/time format pattern, "yyyyMMddHHmmss" by default -->
+              <!-- <zipDateTimeFormatPattern>yyyyMMddHHmmss</zipDateTimeFormatPattern> -->
             </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-              <archive>
-                <manifestEntries>
-                  <Last-Commit-Id>${git.commit.id}</Last-Commit-Id>
-                  <Last-Commit-Time>${git.commit.time}</Last-Commit-Time>
-                  <Reproducible-Build>true</Reproducible-Build>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>io.github.zlika</groupId>
-            <artifactId>reproducible-build-maven-plugin</artifactId>
-            <version>0.5.3</version>
-            <executions>
-              <execution>
-                <id>strip-jaxb</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>strip-jaxb</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>strip-jar</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>strip-jar</goal>
-                </goals>
-                <configuration>
-                  <zipDateTime>${git.commit.time}</zipDateTime>
-                  <!-- Set custom date/time format pattern, "yyyyMMddHHmmss" by default -->
-                  <!-- <zipDateTimeFormatPattern>yyyyMMddHHmmss</zipDateTimeFormatPattern> -->
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   ...
 </project>
 +-----+

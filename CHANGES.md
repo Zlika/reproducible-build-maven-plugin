@@ -1,3 +1,9 @@
+Release 0.6 (2018/04/30)
+===========
+Features
+--------
+* [#20](https://github.com/Zlika/reproducible-build-maven-plugin/pull/20): Add new parameters for strip-jar goal: zipDateTime and zipDateTimeFormatPattern - [@aksian](https://github.com/aksian).
+
 Release 0.5.2 (2018/03/13)
 =============
 Bug Fixes
