@@ -84,6 +84,26 @@ public final class ZipStripper implements Stripper
     };
     
     private final Map<String, Stripper> subFilters = new HashMap<>();
+
+    private final long zipTimestamp;
+
+    /**
+     * Creates ZipStripper with default timestamp ({@link #DEFAULT_ZIP_TIMESTAMP}) for zip archive entries.
+     */
+    public ZipStripper()
+    {
+        zipTimestamp = DEFAULT_ZIP_TIMESTAMP;
+    }
+
+    /**
+     * Creates ZipStripper with specified date and time for zip archive entries.
+     *.
+     * @param zipDateTime date and time for zip archive entries.
+     */
+    public ZipStripper(LocalDateTime zipDateTime)
+    {
+        zipTimestamp = zipDateTime.atZone(ZoneOffset.systemDefault()).toInstant().toEpochMilli();
+    }
     
     /**
      * Adds a stripper for a given file in the Zip.
@@ -158,10 +178,10 @@ public final class ZipStripper implements Stripper
     private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
         // Set times
-        entry.setCreationTime(FileTime.fromMillis(DEFAULT_ZIP_TIMESTAMP));
-        entry.setLastAccessTime(FileTime.fromMillis(DEFAULT_ZIP_TIMESTAMP));
-        entry.setLastModifiedTime(FileTime.fromMillis(DEFAULT_ZIP_TIMESTAMP));
-        entry.setTime(DEFAULT_ZIP_TIMESTAMP);
+        entry.setCreationTime(FileTime.fromMillis(zipTimestamp));
+        entry.setLastAccessTime(FileTime.fromMillis(zipTimestamp));
+        entry.setLastModifiedTime(FileTime.fromMillis(zipTimestamp));
+        entry.setTime(zipTimestamp);
         // Remove extended timestamps
         for (ZipExtraField field : entry.getExtraFields())
         {

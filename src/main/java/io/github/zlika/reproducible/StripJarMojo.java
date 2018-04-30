@@ -16,6 +16,8 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -57,6 +59,20 @@ public final class StripJarMojo extends AbstractMojo
     @Parameter(defaultValue = "false", property = "reproducible.skip")
     private boolean skip;
 
+    /**
+     * By default, timestamp of zip file entries set at midnight on January 1, 2000. Set this parameter to desired
+     * date and time if necessary.
+     */
+    @Parameter(defaultValue = "20000101000000", property = "reproducible.zipDateTime")
+    private String zipDateTime;
+
+    /**
+     * By default, zipDateTime format pattern is {@code "yyyyMMddHHmmss"}. Set custom format pattern if necessary.
+     * Pattern must be valid for {@link java.time.format.DateTimeFormatter#ofPattern(String)}.
+     */
+    @Parameter(defaultValue = "yyyyMMddHHmmss", property = "reproducible.zipDateTimeFormatPattern")
+    private String zipDateTimeFormatPattern;
+
     @Override
     public void execute() throws MojoExecutionException
     {
@@ -68,7 +84,8 @@ public final class StripJarMojo extends AbstractMojo
         {
             this.process(
                 this.findZipFiles(this.outputDirectory),
-                new DefaultZipStripper(new ZipStripper(), this.overwrite)
+                new DefaultZipStripper(new ZipStripper(LocalDateTime.parse(zipDateTime,
+                DateTimeFormatter.ofPattern(zipDateTimeFormatPattern))), this.overwrite)
             );
             this.process(
                 this.findTarFiles(this.outputDirectory),
