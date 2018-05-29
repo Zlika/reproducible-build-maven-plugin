@@ -34,7 +34,8 @@ import java.util.List;
 public final class ManifestStripper implements Stripper
 {
     private static final String[] DEFAULT_ATTRIBUTES =
-        { "Built-By", "Created-By", "Build-Jdk", "Build-Date", "Build-Time", "Bnd-LastModified" };
+        { "Built-By", "Created-By", "Build-Jdk", "Build-Date", "Build-Time",
+        "Bnd-LastModified", "OpenIDE-Module-Build-Version" };
     private final List<String> manifestAttributes;
     
     /**
