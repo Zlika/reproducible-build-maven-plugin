@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -72,6 +74,13 @@ public final class StripJarMojo extends AbstractMojo
      */
     @Parameter(defaultValue = "yyyyMMddHHmmss", property = "reproducible.zipDateTimeFormatPattern")
     private String zipDateTimeFormatPattern;
+    
+    /**
+     * Additional manifest attributes to strip.
+     * Currently, only single-line attributes are supported.
+     */
+    @Parameter(property = "reproducible.manifestAttributes")
+    private List<String> manifestAttributes;
 
     @Override
     public void execute() throws MojoExecutionException
@@ -85,7 +94,8 @@ public final class StripJarMojo extends AbstractMojo
             this.process(
                 this.findZipFiles(this.outputDirectory),
                 new DefaultZipStripper(new ZipStripper(LocalDateTime.parse(zipDateTime,
-                DateTimeFormatter.ofPattern(zipDateTimeFormatPattern))), this.overwrite)
+                DateTimeFormatter.ofPattern(zipDateTimeFormatPattern))),
+                        this.overwrite, this.manifestAttributes)
             );
             this.process(
                 this.findTarFiles(this.outputDirectory),

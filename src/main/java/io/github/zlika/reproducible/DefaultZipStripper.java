@@ -17,11 +17,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Process and strips ZIP (jar, war, as well) archives,
  * supplying a default configuration.
- * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  */
 final class DefaultZipStripper implements Stripper
 {
@@ -33,20 +34,23 @@ final class DefaultZipStripper implements Stripper
      * The ZipStripper to configure.
      */
     private final ZipStripper stripper;
+    private final List<String> manifestAttributes;
 
     /**
      * Constructor.
      * @param stripper The ZipStripper to wrap with default config.
      * @param overwrite Overwrite original file.
+     * @param manifestAttributes Additional manifest attributes to skip.
      */
-    public DefaultZipStripper(final ZipStripper stripper, final boolean overwrite)
+    public DefaultZipStripper(ZipStripper stripper, boolean overwrite, List<String> manifestAttributes)
     {
-        this.stripper = DefaultZipStripper.configure(stripper);
         this.overwrite = overwrite;
+        this.manifestAttributes = Collections.unmodifiableList(manifestAttributes);
+        this.stripper = configure(stripper);
     }
 
     @Override
-    public void strip(final File zip, final File stripped) throws IOException
+    public void strip(File zip, File stripped) throws IOException
     {
         this.stripper.strip(zip, stripped);
         if (this.overwrite)
@@ -60,9 +64,9 @@ final class DefaultZipStripper implements Stripper
      * @param zip The ZipStripper to configure.
      * @return The configured ZipStripper.
      */
-    private static ZipStripper configure(ZipStripper zip)
+    private ZipStripper configure(ZipStripper zip)
     {
-        zip.addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper())
+        zip.addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper(manifestAttributes))
             .addFileStripper("META-INF/maven/\\S*/pom.properties", new PomPropertiesStripper())
             .addFileStripper("META-INF/maven/plugin.xml", new MavenPluginToolsStripper())
             .addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper());
