@@ -1,4 +1,4 @@
-Next Release
+Release 0.7 (2018/06/03)
 ===========
 Features
 --------
