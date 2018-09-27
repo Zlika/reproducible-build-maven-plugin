@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  * Generic interface for stripping non-reproducible data.
  */
-interface Stripper
+public interface Stripper
 {
     /**
      * Strips non-reproducible data.
