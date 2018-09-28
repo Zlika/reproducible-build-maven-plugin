@@ -42,11 +42,11 @@ final class DefaultZipStripper implements Stripper
      * @param overwrite Overwrite original file.
      * @param manifestAttributes Additional manifest attributes to skip.
      */
-    public DefaultZipStripper(ZipStripper stripper, boolean overwrite, List<String> manifestAttributes)
+    public DefaultZipStripper(ZipStripper stripper, boolean overwrite, List<String> manifestAttributes, String addPropertiesFiles)
     {
         this.overwrite = overwrite;
         this.manifestAttributes = Collections.unmodifiableList(manifestAttributes);
-        this.stripper = configure(stripper);
+        this.stripper = configure(stripper, addPropertiesFiles);
     }
 
     @Override
@@ -71,5 +71,25 @@ final class DefaultZipStripper implements Stripper
             .addFileStripper("META-INF/maven/plugin.xml", new MavenPluginToolsStripper())
             .addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper());
         return zip;
+    }
+    
+    /**
+     * Configure the supplied ZipStripper.
+     * @param zip The ZipStripper to configure.
+     * @return The configured ZipStripper.
+     */
+    private ZipStripper configure(ZipStripper zip, String addPropertiesFiles)
+    {
+        if(null != addPropertiesFiles && !"".equals(addPropertiesFiles.trim()))
+        {
+        	for(String properties : addPropertiesFiles.split(","))
+        	{
+        		if(!"".equals(properties.trim()))
+        		{
+        			zip.addFileStripper(properties.trim(), new PomPropertiesStripper());
+        		}
+        	}
+        }
+        return configure(zip);
     }
 }
