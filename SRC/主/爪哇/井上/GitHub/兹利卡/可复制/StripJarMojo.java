@@ -81,6 +81,23 @@ public final class StripJarMojo extends AbstractMojo
      */
     @Parameter(property = "reproducible.manifestAttributes")
     private List<String> manifestAttributes;
+    
+    
+    /**
+     * Added support for zip type extensions addZipType
+     * 
+     * such as hpi , ...
+     */
+    @Parameter(property = "reproducible.addZipType")
+    private String addZipType;
+    
+    /**
+     * Added support for custom properties type file extensions addPropertiesFiles 
+     * 
+     * such as io/github/zlika/reproducibled.properties , ...
+     */
+    @Parameter(property = "reproducible.addPropertiesFiles")
+    private String addPropertiesFiles;
 
     @Override
     public void execute() throws MojoExecutionException
@@ -95,7 +112,7 @@ public final class StripJarMojo extends AbstractMojo
                 this.findZipFiles(this.outputDirectory),
                 new DefaultZipStripper(new ZipStripper(LocalDateTime.parse(zipDateTime,
                 DateTimeFormatter.ofPattern(zipDateTimeFormatPattern))),
-                        this.overwrite, this.manifestAttributes)
+                        this.overwrite, this.manifestAttributes, this.addPropertiesFiles)
             );
             this.process(
                 this.findTarFiles(this.outputDirectory),
@@ -141,7 +158,7 @@ public final class StripJarMojo extends AbstractMojo
     private File[] findZipFiles(File folder)
     {
         final File[] zipFiles = folder.listFiles((dir, name) ->
-                Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith("." + ext))
+                Arrays.stream(getZipExt()).anyMatch(ext -> name.toLowerCase().endsWith("." + ext))
                 && new File(dir, name).isFile());
         return zipFiles != null ? zipFiles : new File[0];
     }
@@ -170,5 +187,14 @@ public final class StripJarMojo extends AbstractMojo
         final String ext = FileUtils.getFileExtension(originalFile);
         return new File(originalFile.getParentFile(), filenameWithoutExt + "-stripped"
                 + (ext.isEmpty() ? "" : ".") + ext);
+    }
+    
+    private String[]  getZipExt()
+    {
+    	if(null != addZipType && !"".equals(addZipType.trim()))
+    	{
+    		return Arrays.asList(ZIP_EXT).toArray(addZipType.split(","));
+    	}
+    	return ZIP_EXT;
     }
 }
