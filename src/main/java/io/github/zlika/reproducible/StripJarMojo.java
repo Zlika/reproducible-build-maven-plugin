@@ -34,7 +34,7 @@ import org.apache.maven.plugins.annotations.Parameter;
         requiresProject = false, threadSafe = true)
 public final class StripJarMojo extends AbstractMojo
 {
-    private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear" };
+    private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear", "hpi" };
 
     private static final String TAR_GZ_EXT = "tar.gz";
 
