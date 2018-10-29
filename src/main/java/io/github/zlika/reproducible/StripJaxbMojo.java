@@ -34,6 +34,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "strip-jaxb", defaultPhase = LifecyclePhase.PROCESS_SOURCES, threadSafe = true)
 public final class StripJaxbMojo extends AbstractMojo
 {
+    private static final int JAXB_FILE_JAXB_COMMENT_LINE_NUMBER = 1;
+    private static final int JAXB_FILE_TIMESTAMP_LINE_NUMBER = 4;
+    private static final int JAXB_EPISODE_JAXB_COMMENT_LINE_NUMBER = 4;
+    private static final int JAXB_EPISODE_TIMESTAMP_LINE_NUMBER = 7;
+    
     /**
      * The file encoding to use when reading the source files.
      * If the property project.build.sourceEncoding is not set,
@@ -90,8 +95,9 @@ public final class StripJaxbMojo extends AbstractMojo
             return;
         }
         final Charset charset = Charset.forName(encoding);
-        final JaxbObjectFactoryFixer fixer = new JaxbObjectFactoryFixer(charset);
-        final LineNumberStripper dateStripper = new LineNumberStripper(4);
+        final JaxbObjectFactoryFixer objectFactoryFixer = new JaxbObjectFactoryFixer(charset);
+        final LineNumberStripper jaxbFileDateStripper = new LineNumberStripper(JAXB_FILE_TIMESTAMP_LINE_NUMBER);
+        final LineNumberStripper jaxbEpisodeDateStripper = new LineNumberStripper(JAXB_EPISODE_TIMESTAMP_LINE_NUMBER);
         final File tmpFile = createTempFile();
         
         try
@@ -102,21 +108,30 @@ public final class StripJaxbMojo extends AbstractMojo
                 {
                     try
                     {
-                        final boolean isObjectFactoryFile = "ObjectFactory.java".equals(f.toFile().getName());
                         final List<String> lines = Files.readAllLines(f, charset);
-                        final boolean isJaxbFile = lines.size() > 5 && lines.get(0).equals("//")
-                                && lines.get(1).contains("JavaTM Architecture for XML Binding");
-                        if (isObjectFactoryFile || isJaxbFile)
+                        // We cannot rely on an exact comment text to check if it is a JAXB generated file
+                        // because it depends on the current locale
+                        final boolean isJaxbFile = isJaxbFile(lines);
+                        final boolean isObjectFactoryFile = isJaxbFile
+                                && "ObjectFactory.java".equals(f.toFile().getName());
+                        final boolean isEpisodeFile = isEpisodeFile(f.toFile().getName(), lines);
+                                        
+                        if (isObjectFactoryFile || isJaxbFile || isEpisodeFile)
                         {
                             getLog().info("Stripping " + f.toFile().getAbsolutePath());
                             if (isObjectFactoryFile && fixJaxbOrder)
                             {
-                                fixer.strip(f.toFile(), tmpFile);
+                                objectFactoryFixer.strip(f.toFile(), tmpFile);
                                 Files.move(tmpFile.toPath(), f, StandardCopyOption.REPLACE_EXISTING);
                             }
                             if (isJaxbFile && removeJaxbTimestamps)
                             {
-                                dateStripper.strip(f.toFile(), tmpFile);
+                                jaxbFileDateStripper.strip(f.toFile(), tmpFile);
+                                Files.move(tmpFile.toPath(), f, StandardCopyOption.REPLACE_EXISTING);
+                            }
+                            if (isEpisodeFile && removeJaxbTimestamps)
+                            {
+                                jaxbEpisodeDateStripper.strip(f.toFile(), tmpFile);
                                 Files.move(tmpFile.toPath(), f, StandardCopyOption.REPLACE_EXISTING);
                             }
                         }
@@ -131,6 +146,24 @@ public final class StripJaxbMojo extends AbstractMojo
         {
             throw new MojoExecutionException("Error when visiting " + generatedDirectory.getAbsolutePath(), e);
         }
+    }
+    
+    private boolean isJaxbFile(List<String> lines)
+    {
+        return lines.size() > JAXB_FILE_TIMESTAMP_LINE_NUMBER
+                && lines.get(0).equals("//")
+                && lines.get(JAXB_FILE_JAXB_COMMENT_LINE_NUMBER)
+                    .contains("JavaTM Architecture for XML Binding (JAXB)")
+                    && lines.get(JAXB_FILE_TIMESTAMP_LINE_NUMBER).contains(":");
+    }
+    
+    private boolean isEpisodeFile(String filename, List<String> lines)
+    {
+        return filename.endsWith(".episode")
+                && lines.size() > JAXB_EPISODE_TIMESTAMP_LINE_NUMBER
+                && lines.get(JAXB_EPISODE_JAXB_COMMENT_LINE_NUMBER)
+                    .contains("JavaTM Architecture for XML Binding (JAXB)")
+                && lines.get(JAXB_EPISODE_TIMESTAMP_LINE_NUMBER).contains(":");
     }
 
     private File createTempFile() throws MojoExecutionException
