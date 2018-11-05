@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bindings version="2.1" xmlns="http://java.sun.com/xml/ns/jaxb">
+  <!--
+
+Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.11 
+Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
+Généré le : 2018.10.29 à 02:46:59 PM CET 
+
+  -->
+  <bindings scd="x-schema::tns" xmlns:tns="http://tempuri.org/PurchaseOrderSchema.xsd">
+    <schemaBindings map="false">
+      <package name="org.tempuri.purchaseorderschema"/>
+    </schemaBindings>
+    <bindings scd="~tns:PurchaseOrderType">
+      <class ref="org.tempuri.purchaseorderschema.PurchaseOrderType"/>
+    </bindings>
+    <bindings scd="~tns:USAddress">
+      <class ref="org.tempuri.purchaseorderschema.USAddress"/>
+    </bindings>
+  </bindings>
+</bindings>
+
