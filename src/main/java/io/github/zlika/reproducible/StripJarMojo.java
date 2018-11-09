@@ -76,6 +76,13 @@ public final class StripJarMojo extends AbstractMojo
     private String zipDateTimeFormatPattern;
     
     /**
+     * If enabled, the ZIP external file attributes will be forced to rw-r--r for files and rwxr-xr-x for folders.
+     * This parameter only applies to JAR/WAR files.
+     */
+    @Parameter(defaultValue = "false", property = "reproducible.fixZipExternalFileAttributes")
+    private boolean fixZipExternalFileAttributes;
+    
+    /**
      * Additional manifest attributes to strip.
      * Currently, only single-line attributes are supported.
      */
@@ -94,7 +101,8 @@ public final class StripJarMojo extends AbstractMojo
             this.process(
                 this.findZipFiles(this.outputDirectory),
                 new DefaultZipStripper(new ZipStripper(LocalDateTime.parse(zipDateTime,
-                DateTimeFormatter.ofPattern(zipDateTimeFormatPattern))),
+                DateTimeFormatter.ofPattern(zipDateTimeFormatPattern)),
+                fixZipExternalFileAttributes),
                         this.overwrite, this.manifestAttributes)
             );
             this.process(

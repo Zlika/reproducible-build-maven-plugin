@@ -86,6 +86,7 @@ public final class ZipStripper implements Stripper
     private final Map<String, Stripper> subFilters = new HashMap<>();
 
     private final long zipTimestamp;
+    private final boolean fixZipExternalFileAttributes;
 
     /**
      * Creates ZipStripper with default timestamp ({@link #DEFAULT_ZIP_TIMESTAMP}) for zip archive entries.
@@ -93,16 +94,18 @@ public final class ZipStripper implements Stripper
     public ZipStripper()
     {
         zipTimestamp = DEFAULT_ZIP_TIMESTAMP;
+        fixZipExternalFileAttributes = false;
     }
 
     /**
-     * Creates ZipStripper with specified date and time for zip archive entries.
+     * Creates ZipStripper with specified configuration.
      *.
      * @param zipDateTime date and time for zip archive entries.
      */
-    public ZipStripper(LocalDateTime zipDateTime)
+    public ZipStripper(LocalDateTime zipDateTime, boolean fixZipExternalFileAttributes)
     {
         zipTimestamp = zipDateTime.atZone(ZoneOffset.systemDefault()).toInstant().toEpochMilli();
+        this.fixZipExternalFileAttributes = fixZipExternalFileAttributes;
     }
     
     /**
@@ -129,6 +132,11 @@ public final class ZipStripper implements Stripper
                 final ZipArchiveEntry entry = zip.getEntry(name);
                 // Strip Zip entry
                 final ZipArchiveEntry strippedEntry = filterZipEntry(entry);
+                // Fix external file attributes if required
+                if (in.getName().endsWith(".jar") || in.getName().endsWith(".war"))
+                {
+                    fixAttributes(strippedEntry);
+                }
                 // Strip file if required
                 final Stripper stripper = getSubFilter(name);
                 if (stripper != null)
@@ -151,6 +159,21 @@ public final class ZipStripper implements Stripper
                     // Copy the Zip entry as-is
                     zout.addRawArchiveEntry(strippedEntry, zip.getRawInputStream(entry));
                 }
+            }
+        }
+    }
+    
+    private void fixAttributes(ZipArchiveEntry entry)
+    {
+        if (fixZipExternalFileAttributes)
+        {
+            if (entry.isDirectory())
+            {
+                entry.setUnixMode(0755);
+            }
+            else
+            {
+                entry.setUnixMode(0644);
             }
         }
     }
