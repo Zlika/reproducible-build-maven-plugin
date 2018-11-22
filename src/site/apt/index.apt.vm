@@ -36,3 +36,5 @@ ${project.name}
    are put in a non-predictable order, which produces non-reproductible class files. Cf. issue {{{https://java.net/jira/browse/JAXB-598}JAXB-598}}).
  
  If you find other interesting sources of "non reproducible" data that this plugin could remove, please open a ticket in the bug tracker or send a pull request.
+
+ Please note that you must use the same compiler (and possibly Maven) version to get the same results. You can use the maven-enforcer-plugin for that, or use a tool like {{{https://github.com/Zlika/moot}moot}} to download and use the JDK and Maven versions people need to use for the build.

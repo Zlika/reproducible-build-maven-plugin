@@ -1,7 +1,8 @@
 Next Release
 ===========
-* [#33](https://github.com/Zlika/reproducible-build-maven-plugin/issues/33): Remove timestamps from JAXB generated files.
+* [#24](https://github.com/Zlika/reproducible-build-maven-plugin/issues/24): Add optional property "fixZipExternalFileAttributes" to set access rights in JAR's files to be robust to different umask values.
 * [#27](https://github.com/Zlika/reproducible-build-maven-plugin/issues/27): Also strips Jenkins plugins (*.hpi).
+* [#33](https://github.com/Zlika/reproducible-build-maven-plugin/issues/33): Remove timestamps from JAXB generated files.
 * Upgrade version of commons-compress to avoid potential security issue.
 
 Release 0.7 (2018/06/03)

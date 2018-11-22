@@ -9,6 +9,8 @@ reproducible-build-maven-plugin
 A Maven plugin to make your build byte-for-byte reproducible.
 Cf. http://zlika.github.io/reproducible-build-maven-plugin/
 
+See also [moot](https://github.com/Zlika/moot), a script that downloads given versions of Maven and the JDK and runs the build with them. This script helps fixing non-reproducibilities that cannot be fixed by the reproducible-build-maven-plugin.
+
 ### Requirements
 
 * Java 8
