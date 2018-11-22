@@ -13,7 +13,7 @@ See also [moot](https://github.com/Zlika/moot), a script that downloads given ve
 
 ### Requirements
 
-* Java 8
+* Java 8 or newer
 * Maven 3.0.0 or newer
 
 ### How to compile
