@@ -167,13 +167,21 @@ public final class ZipStripper implements Stripper
     {
         if (fixZipExternalFileAttributes)
         {
+            /* ZIP external file attributes:
+               TTTTsstrwxrwxrwx0000000000ADVSHR
+               ^^^^____________________________ file type
+                                                (file: 1000 , dir: 0100)
+                   ^^^_________________________ setuid, setgid, sticky
+                      ^^^^^^^^^________________ Unix permissions
+                                         ^^^^^^ DOS attributes
+               The argument of setUnixMode() only takes the 2 upper bytes. */
             if (entry.isDirectory())
             {
-                entry.setUnixMode(0755);
+                entry.setUnixMode((0b0100 << 12) + 0755);
             }
             else
             {
-                entry.setUnixMode(0644);
+                entry.setUnixMode((0b1000 << 12) + 0644);
             }
         }
     }
