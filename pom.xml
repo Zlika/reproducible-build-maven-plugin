@@ -59,6 +59,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
     <!-- Maven plugin versions -->
+    <apache-source-release-assembly-descriptor.version>1.0.6</apache-source-release-assembly-descriptor.version>
     <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
     <spotbugs-maven-plugin.version>3.1.8</spotbugs-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
@@ -479,7 +480,7 @@
           </plugin>
           
           <!-- Create a source-release artifact that contains the fully buildable
-               project directory source structure.  -->
+               project directory source structure -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
@@ -488,7 +489,7 @@
               <dependency>
                 <groupId>org.apache.apache.resources</groupId>
                 <artifactId>apache-source-release-assembly-descriptor</artifactId>
-                <version>1.0.6</version>
+                <version>${apache-source-release-assembly-descriptor.version}</version>
               </dependency>
             </dependencies>
             <executions>
