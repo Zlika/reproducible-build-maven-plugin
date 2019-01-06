@@ -1,3 +1,9 @@
+Next Release
+===========
+Non-functional changes
+----------------------
+* [#35](https://github.com/Zlika/reproducible-build-maven-plugin/pull/35): Publish buildable source archive of this plugin to Maven central when releasing - [@hboutemy](https://github.com/hboutemy).
+
 Release 0.8 (2018/11/27)
 ===========
 Features
