@@ -4,7 +4,8 @@ jdk:
   - openjdk8
   - openjdk9
   - openjdk11
-  - openjdk-ea
+  - openjdk12
+#  - openjdk-ea
 
 os:
   - linux
