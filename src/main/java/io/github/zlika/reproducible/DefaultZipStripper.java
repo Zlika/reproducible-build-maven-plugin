@@ -69,7 +69,8 @@ final class DefaultZipStripper implements Stripper
         zip.addFileStripper("META-INF/MANIFEST.MF", new ManifestStripper(manifestAttributes))
             .addFileStripper("META-INF/maven/\\S*/pom.properties", new PomPropertiesStripper())
             .addFileStripper("META-INF/maven/plugin.xml", new MavenPluginToolsStripper())
-            .addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper());
+            .addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper())
+            .addFileStripper("META-INF/sisu/javax.inject.Named", LineEndingsStripper.INSTANCE);
         return zip;
     }
 }

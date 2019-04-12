@@ -88,6 +88,9 @@ public final class StripJarMojo extends AbstractMojo
      */
     @Parameter(property = "reproducible.manifestAttributes")
     private List<String> manifestAttributes;
+    
+    @Parameter(property = "reproducible.newLineTextFiles")
+    private List<String> newLineTextFiles;
 
     @Override
     public void execute() throws MojoExecutionException
@@ -98,12 +101,12 @@ public final class StripJarMojo extends AbstractMojo
         }
         else
         {
+            final ZipStripper zipStripper = new ZipStripper(LocalDateTime.parse(zipDateTime,
+                    DateTimeFormatter.ofPattern(zipDateTimeFormatPattern)), fixZipExternalFileAttributes);
+            newLineTextFiles.forEach(f -> zipStripper.addFileStripper(f, LineEndingsStripper.INSTANCE));
             this.process(
                 this.findZipFiles(this.outputDirectory),
-                new DefaultZipStripper(new ZipStripper(LocalDateTime.parse(zipDateTime,
-                DateTimeFormatter.ofPattern(zipDateTimeFormatPattern)),
-                fixZipExternalFileAttributes),
-                        this.overwrite, this.manifestAttributes)
+                new DefaultZipStripper(zipStripper, this.overwrite, this.manifestAttributes)
             );
             this.process(
                 this.findTarFiles(this.outputDirectory),
