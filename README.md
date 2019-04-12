@@ -23,3 +23,7 @@ To compile the project and run its integration tests:
 ```
 mvn clean install -Prun-its
 ```
+The JAR file published on Maven Central is compiled reproducibly using moot:
+```
+./moot clean deploy -Prun-its
+```
