@@ -1,9 +1,12 @@
-Next Release
+Release 0.9 (14/04/2019)
 ===========
+Features
+--------
+* [#37](https://github.com/Zlika/reproducible-build-maven-plugin/issues/37): Reproducible line endings for META-INF/sisu/javax.inject.Named + configuration option to add a list of text files where the line endings should be made reproducible.
+
 Non-functional changes
 ----------------------
 * [#35](https://github.com/Zlika/reproducible-build-maven-plugin/pull/35): Publish buildable source archive of this plugin to Maven central when releasing - [@hboutemy](https://github.com/hboutemy).
-* [#37](https://github.com/Zlika/reproducible-build-maven-plugin/issues/37): Reproducible line endings for META-INF/sisu/javax.inject.Named + configuration option to add a list of text files where the line endings should be made reproducible.
 * The plugin is now built reproducibly using a previous version.
 
 Release 0.8 (2018/11/27)
