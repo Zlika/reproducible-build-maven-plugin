@@ -3,7 +3,7 @@
 
   <groupId>io.github.zlika</groupId>
   <artifactId>reproducible-build-maven-plugin</artifactId>
-  <version>0.9</version>
+  <version>0.9-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Reproducible Build Maven Plugin</name>
@@ -30,7 +30,7 @@
     <connection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</developerConnection>
     <url>https://github.com/Zlika/reproducible-build-maven-plugin</url>
-    <tag>v0.9</tag>
+    <tag>HEAD</tag>
   </scm>
   
   <issueManagement>
@@ -302,6 +302,21 @@
         <executions>
           <execution>
             <goals><goal>check</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- The plugin is used on itself to make its build reproducible -->
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>stripping</id>
+            <goals>
+              <goal>strip-jar</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
