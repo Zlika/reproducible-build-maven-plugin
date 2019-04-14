@@ -305,21 +305,6 @@
           </execution>
         </executions>
       </plugin>
-      
-      <!-- The plugin is used on itself to make its build reproducible -->
-      <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
-        <executions>
-          <execution>
-            <id>stripping</id>
-            <goals>
-              <goal>strip-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
     </plugins>
   </build>
