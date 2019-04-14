@@ -84,7 +84,7 @@
     <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
     <wagon-gitsite.version>0.3.1</wagon-gitsite.version>
     <!-- Previous version of the plugin is used to make its build reproducible -->
-    <reproducible-build-maven-plugin.version>0.8</reproducible-build-maven-plugin.version>
+    <reproducible-build-maven-plugin.prevversion>0.8</reproducible-build-maven-plugin.prevversion>
     
     <!-- Dependency versions -->
     <commons-compress.version>1.18</commons-compress.version>
@@ -312,7 +312,7 @@
       <plugin>
         <groupId>${project.groupId}</groupId>
         <artifactId>${project.artifactId}</artifactId>
-        <version>${reproducible-build-maven-plugin.version}</version>
+        <version>${reproducible-build-maven-plugin.prevversion}</version>
         <executions>
           <execution>
             <id>stripping</id>
