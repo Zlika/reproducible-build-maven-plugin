@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link PomPropertiesStripper}.
+ * Unit tests for {@link PropertiesFileStripper}.
  */
 public class PomPropertiesStripperTest
 {
@@ -36,7 +36,7 @@ public class PomPropertiesStripperTest
         final File out = File.createTempFile("pom", null);
         out.deleteOnExit();
         
-        new PomPropertiesStripper().strip(new File(this.getClass().getResource("pom.properties").getFile()), out);
+        new PropertiesFileStripper().strip(new File(this.getClass().getResource("pom.properties").getFile()), out);
         
         final byte[] expected = Files.readAllBytes(new File(
                                     this.getClass().getResource("pom-stripped.properties").getFile()).toPath());
