@@ -71,8 +71,9 @@ final class DefaultZipStripper implements Stripper
             .addFileStripper("META-INF/maven/plugin.xml", new MavenPluginToolsStripper())
             .addFileStripper("META-INF/maven/\\S*/plugin-help.xml", new MavenPluginToolsStripper())
             .addFileStripper("META-INF/sisu/javax.inject.Named", LineEndingsStripper.INSTANCE)
-            .addFileStripper("META-INF/build-info.properties", new PropertiesFileStripper())
-            .addFileStripper("BOOT-INFO/classes/git.properties", new PropertiesFileStripper());
+            .addFileStripper("META-INF/build-info.properties", new PropertiesFileStripper("build.time"))
+            .addFileStripper("BOOT-INFO/classes/git.properties", new PropertiesFileStripper(
+                    "git.build.host", "git.build.time", "git.build.user.email", "git.build.user.name"));
         return zip;
     }
 }

@@ -16,16 +16,34 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Strips non-reproducible data from a properties file.
- * This stripper removes all comment lines (as some of them can contain date/time).
+ * This stripper removes all comment lines (as some of them can contain date/time),
+ * fix the line endings and optionally remove some user-defined properties.
  */
 public final class PropertiesFileStripper implements Stripper
 {
+    private final List<String> propertiesToRemove;
+    
+    /**
+     * Constructor.
+     * @param propertiesToRemove list of properties to remove from the file.
+     */
+    public PropertiesFileStripper(String... propertiesToRemove)
+    {
+        this.propertiesToRemove = Arrays.asList(propertiesToRemove);
+    }
+    
     @Override
     public void strip(File in, File out) throws IOException
     {
-        new TextFileStripper().addPredicate(s -> s.startsWith("#")).strip(in, out);
+        final TextFileStripper stripper = new TextFileStripper();
+        stripper.addPredicate(s -> s.startsWith("#"));
+        propertiesToRemove.forEach(property ->
+            stripper.addPredicate(s -> s.startsWith(property + "=")));
+        stripper.strip(in, out);
     }
 }
