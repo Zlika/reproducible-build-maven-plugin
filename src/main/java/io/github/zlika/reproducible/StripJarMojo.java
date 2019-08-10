@@ -15,6 +15,7 @@
 package io.github.zlika.reproducible;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,12 +36,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 public final class StripJarMojo extends AbstractMojo
 {
     private static final String[] ZIP_EXT = { "zip", "jar", "war", "ear", "hpi" };
-
     private static final String TAR_GZ_EXT = "tar.gz";
-
     private static final String TAR_BZ_EXT = "tar.bz2";
-
     private static final String TAR_EXT = "tar";
+    private static final byte[] ZIP_FILE_HEADER = new byte[] { 0x50, 0x4B, 0x03, 0x04 };
+    private static final byte[] SPRING_BOOT_EXEC_HEADER = new byte[] { 0x23, 0x21, 0x2F, 0x62, 0x69, 0x6E };
 
     /**
      * Directory where to find zip/jar/war/ear files for stripping.
@@ -109,6 +109,11 @@ public final class StripJarMojo extends AbstractMojo
                 new DefaultZipStripper(zipStripper, this.overwrite, this.manifestAttributes)
             );
             this.process(
+                    this.findSpringBootExecutable(this.outputDirectory),
+                    new SpringBootExecutableStripper(this.overwrite,
+                            new DefaultZipStripper(zipStripper, false, this.manifestAttributes))
+            );
+            this.process(
                 this.findTarFiles(this.outputDirectory),
                 new SmartTarStripper(this.overwrite)
             );
@@ -153,8 +158,40 @@ public final class StripJarMojo extends AbstractMojo
     {
         final File[] zipFiles = folder.listFiles((dir, name) ->
                 Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith("." + ext))
-                && new File(dir, name).isFile());
+                && new File(dir, name).isFile()
+                && Arrays.equals(getFileHeader(new File(dir, name), ZIP_FILE_HEADER.length),
+                                ZIP_FILE_HEADER));
         return zipFiles != null ? zipFiles : new File[0];
+    }
+    
+    /**
+     * Finds JAR/WAR/ZIP files repackaged by the spring-boot-maven-plugin plugin.
+     */
+    private File[] findSpringBootExecutable(File folder)
+    {
+        final File[] zipFiles = folder.listFiles((dir, name) ->
+        Arrays.stream(ZIP_EXT).anyMatch(ext -> name.toLowerCase().endsWith("." + ext))
+        && new File(dir, name).isFile()
+        && Arrays.equals(getFileHeader(new File(dir, name), SPRING_BOOT_EXEC_HEADER.length),
+                        SPRING_BOOT_EXEC_HEADER));
+        return zipFiles != null ? zipFiles : new File[0];
+    }
+    
+    private byte[] getFileHeader(File file, int length)
+    {
+        final byte[] header = new byte[length];
+        try (FileInputStream is = new FileInputStream(file))
+        {
+            if (is.read(header) != length)
+            {
+                return null;
+            }
+        }
+        catch (IOException e)
+        {
+            return null;
+        }
+        return header;
     }
 
     private File[] findTarBzFiles(File folder)
