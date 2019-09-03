@@ -13,7 +13,7 @@ ${project.name}
  
  Using this plugin is a no-brainer: simply add it to your pom and it will try to "automagically" make the build byte-for-byte reproducible.
  
- <<NOTE:>> <This plugin requires a Java 8 runtime.>
+ <<NOTE:>> <This plugin requires Java 8 or later.>
  
 * Goals Overview
  
