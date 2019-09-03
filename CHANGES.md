@@ -1,4 +1,4 @@
-Next release
+Release 0.11 (2019/09/03)
 ===========
 Features
 --------
