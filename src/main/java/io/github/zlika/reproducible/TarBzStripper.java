@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -27,12 +28,17 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 
 /**
  * Stripper implementation for tar compressed with bz2.
- * 
- * @author tglman
- *
  */
 public class TarBzStripper extends TarStripper
 {
+    /**
+     * Constructor.
+     * @param reproducibleDateTime the date/time to use in TAR entries.
+     */
+    public TarBzStripper(LocalDateTime reproducibleDateTime)
+    {
+        super(reproducibleDateTime);
+    }
 
     @Override
     protected TarArchiveInputStream createInputStream(File in) throws FileNotFoundException, IOException
@@ -45,5 +51,4 @@ public class TarBzStripper extends TarStripper
     {
         return new TarArchiveOutputStream(new BZip2CompressorOutputStream(new FileOutputStream(out)));
     }
-
 }

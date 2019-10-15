@@ -15,6 +15,9 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,7 +43,8 @@ public class TarStripperTest
         final File stripped = File.createTempFile("test-tar", ".tar");
         stripped.deleteOnExit();
 
-        new TarStripper().strip(original, stripped);
+        final LocalDateTime dateTime = LocalDateTime.now();
+        new TarStripper(dateTime).strip(original, stripped);
 
         final TarArchiveEntry[] entries = new TarFile(stripped).entries();
         Assert.assertEquals(8, entries.length);
@@ -51,15 +55,9 @@ public class TarStripperTest
             Assert.assertEquals(name + " user name", "", entry.getUserName());
             Assert.assertEquals(name + " group id", 0L, entry.getLongGroupId());
             Assert.assertEquals(name + " group name", "", entry.getGroupName());
-            Assert.assertEquals(name + " modified time", 0, entry.getModTime().getTime());
-            if (entry.isDirectory())
-            {
-                Assert.assertEquals(name + " dir permissions", TarArchiveEntry.DEFAULT_DIR_MODE, entry.getMode());
-            }
-            else
-            {
-                Assert.assertEquals(name + " file permissions", TarArchiveEntry.DEFAULT_FILE_MODE, entry.getMode());
-            }
+            // TAR timestamps have 1s accuracy
+            final long expectedTimestamp = (dateTime.toInstant(ZoneOffset.UTC).toEpochMilli() / 1000) * 1000;
+            Assert.assertEquals(name + " modified time", expectedTimestamp, entry.getModTime().getTime());
         }
         Assert.assertFalse(
             "Original tar should not match the stripped tar",

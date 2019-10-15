@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +38,17 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
  */
 public class TarStripper implements Stripper
 {
-
+    private long tarTime;
+    
+    /**
+     * Constructor.
+     * @param reproducibleDateTime the date/time to use in TAR entries.
+     */
+    public TarStripper(LocalDateTime reproducibleDateTime)
+    {
+        this.tarTime = reproducibleDateTime.atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
+    }
+    
     /**
      * Factory that create a new instance of tar input stream, for allow extension for different file compression
      * format.
@@ -129,19 +141,11 @@ public class TarStripper implements Stripper
 
     private TarArchiveEntry filterTarEntry(TarArchiveEntry entry)
     {
-        entry.setModTime(0L);
+        entry.setModTime(tarTime);
         entry.setGroupId(0);
         entry.setUserId(0);
         entry.setUserName("");
         entry.setGroupName("");
-        if (entry.isDirectory())
-        {
-            entry.setMode(TarArchiveEntry.DEFAULT_DIR_MODE);
-        }
-        else
-        {
-            entry.setMode(TarArchiveEntry.DEFAULT_FILE_MODE);
-        }
         return entry;
     }
 }

@@ -101,8 +101,9 @@ public final class StripJarMojo extends AbstractMojo
         }
         else
         {
-            final ZipStripper zipStripper = new ZipStripper(LocalDateTime.parse(zipDateTime,
-                    DateTimeFormatter.ofPattern(zipDateTimeFormatPattern)), fixZipExternalFileAttributes);
+            final LocalDateTime reproducibleDateTime = LocalDateTime.parse(zipDateTime,
+                    DateTimeFormatter.ofPattern(zipDateTimeFormatPattern));
+            final ZipStripper zipStripper = new ZipStripper(reproducibleDateTime, fixZipExternalFileAttributes);
             newLineTextFiles.forEach(f -> zipStripper.addFileStripper(f, LineEndingsStripper.INSTANCE));
             this.process(
                 this.findZipFiles(this.outputDirectory),
@@ -115,15 +116,15 @@ public final class StripJarMojo extends AbstractMojo
             );
             this.process(
                 this.findTarFiles(this.outputDirectory),
-                new SmartTarStripper(this.overwrite)
+                new SmartTarStripper(this.overwrite, reproducibleDateTime)
             );
             this.process(
                 this.findTarBzFiles(this.outputDirectory),
-                new SmartTarStripper(this.overwrite)
+                new SmartTarStripper(this.overwrite, reproducibleDateTime)
             );
             this.process(
                 this.findTarGzFiles(this.outputDirectory),
-                new SmartTarStripper(this.overwrite)
+                new SmartTarStripper(this.overwrite, reproducibleDateTime)
             );
         }
     }
