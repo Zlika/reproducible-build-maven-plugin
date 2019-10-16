@@ -1,3 +1,13 @@
+Next release
+===========
+Bug Fixes
+---------
+* [#43](https://github.com/Zlika/reproducible-build-maven-plugin/issues/43): Fix timestamps and unix permissions in TAR file entries.
+
+Non-functional changes
+----------------------
+* Upgrade commons-compress to fix CVE.
+
 Release 0.11 (2019/09/03)
 ===========
 Features
