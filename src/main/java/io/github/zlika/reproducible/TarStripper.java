@@ -69,7 +69,6 @@ public class TarStripper implements Stripper
      * Factory that create a new instance of tar output stream, for allow extension for different file compression
      * format.
      *
-     *
      * @param out
      * @return
      * @throws FileNotFoundException
@@ -80,7 +79,9 @@ public class TarStripper implements Stripper
      */
     protected TarArchiveOutputStream createOutputStream(File out) throws FileNotFoundException, IOException
     {
-        return new TarArchiveOutputStream(new FileOutputStream(out));
+        final TarArchiveOutputStream stream = new TarArchiveOutputStream(new FileOutputStream(out));
+        stream.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+        return stream;
     }
 
     @Override

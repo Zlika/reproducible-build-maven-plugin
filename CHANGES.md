@@ -3,6 +3,7 @@ Next release
 Bug Fixes
 ---------
 * [#43](https://github.com/Zlika/reproducible-build-maven-plugin/issues/43): Fix timestamps and unix permissions in TAR file entries.
+* [#44](https://github.com/Zlika/reproducible-build-maven-plugin/issues/44): Fix generation of TAR archives including files with long names.
 
 Non-functional changes
 ----------------------

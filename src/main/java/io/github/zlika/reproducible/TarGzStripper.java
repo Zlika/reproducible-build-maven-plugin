@@ -48,6 +48,9 @@ public class TarGzStripper extends TarStripper
     @Override
     protected TarArchiveOutputStream createOutputStream(File out) throws FileNotFoundException, IOException
     {
-        return new TarArchiveOutputStream(new GzipCompressorOutputStream(new FileOutputStream(out)));
+        final TarArchiveOutputStream stream = new TarArchiveOutputStream(
+                new GzipCompressorOutputStream(new FileOutputStream(out)));
+        stream.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+        return stream;
     }
 }
