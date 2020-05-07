@@ -1,4 +1,4 @@
-Next release
+Release 0.12 (2020/05/07)
 ===========
 Bug Fixes
 ---------

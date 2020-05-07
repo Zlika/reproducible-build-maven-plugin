@@ -85,7 +85,7 @@
     <wagon-gitsite.version>0.3.1</wagon-gitsite.version>
     
     <!-- Dependency versions -->
-    <commons-compress.version>1.19</commons-compress.version>
+    <commons-compress.version>1.20</commons-compress.version>
     <junit.version>4.12</junit.version>
     <maven-plugin-annotations.version>3.6.0</maven-plugin-annotations.version>
     <maven-plugin-api.version>3.6.0</maven-plugin-api.version>
