@@ -101,6 +101,7 @@ public final class ZipStripper implements Stripper
      * Creates ZipStripper with specified configuration.
      *.
      * @param zipDateTime date and time for zip archive entries.
+     * @param fixZipExternalFileAttributes true to be insensitive to umask setting.
      */
     public ZipStripper(LocalDateTime zipDateTime, boolean fixZipExternalFileAttributes)
     {

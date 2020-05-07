@@ -53,8 +53,8 @@ public class TarStripper implements Stripper
      * Factory that create a new instance of tar input stream, for allow extension for different file compression
      * format.
      *
-     * @param in
-     * @return
+     * @param in the input file.
+     * @return a TarArchiveInputStream for the file.
      * @throws FileNotFoundException
      *             if the file as parameter is not found
      * @throws IOException
@@ -69,8 +69,8 @@ public class TarStripper implements Stripper
      * Factory that create a new instance of tar output stream, for allow extension for different file compression
      * format.
      *
-     * @param out
-     * @return
+     * @param out the output file.
+     * @return a TarArchiveOutputStream for the file.
      * @throws FileNotFoundException
      *             if the file as parameter is not found
      * @throws IOException

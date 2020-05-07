@@ -41,6 +41,7 @@ public class SpringBootExecutableStripper implements Stripper
     
     /**
      * Constructor.
+     * @param overwrite true to overwrite the original file.
      * @param zipStripper Stripper to use to process the ZIP file.
      */
     public SpringBootExecutableStripper(boolean overwrite, DefaultZipStripper zipStripper)
