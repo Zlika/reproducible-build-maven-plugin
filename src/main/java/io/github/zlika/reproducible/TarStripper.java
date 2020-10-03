@@ -97,14 +97,15 @@ public class TarStripper implements Stripper
             while ((entry = tar.getNextTarEntry()) != null)
             {
                 sortedNames.add(entry);
-                File copyTo = new File(tmp.toFile(), entry.getName());
+                final File copyTo = new File(tmp.toFile(), entry.getName());
+                zipSlipProtection(copyTo, tmp);
                 if (entry.isDirectory())
                 {
                     FileUtils.mkdirs(copyTo);
                 }
                 else
                 {
-                    File destParent = copyTo.getParentFile();
+                    final File destParent = copyTo.getParentFile();
                     FileUtils.mkdirs(destParent);
                     Files.copy(tar, copyTo.toPath());
                 }
@@ -112,7 +113,7 @@ public class TarStripper implements Stripper
             sortedNames = sortTarEntries(sortedNames);
             for (TarArchiveEntry sortedEntry : sortedNames)
             {
-                File copyFrom = new File(tmp.toFile(), sortedEntry.getName());
+                final File copyFrom = new File(tmp.toFile(), sortedEntry.getName());
                 if (!sortedEntry.isDirectory())
                 {
                     final byte[] fileContent = Files.readAllBytes(copyFrom.toPath());
@@ -148,5 +149,20 @@ public class TarStripper implements Stripper
         entry.setUserName("");
         entry.setGroupName("");
         return entry;
+    }
+    
+    /**
+     * Protection against 'Zip Slip' vulnerability.
+     * This method checks that the file path is located inside the expected folder.
+     * @param file the file path to check.
+     * @param extractFolder the folder.
+     * @throws IOException if a 'Zip Slip' attack is detected.
+     */
+    private void zipSlipProtection(File file, Path extractFolder) throws IOException
+    {
+        if (!file.toPath().normalize().startsWith(extractFolder))
+        {
+            throw new IOException("Bad zip entry");
+        }
     }
 }
