@@ -8,6 +8,8 @@ ${project.name}
   
  Have you ever tried to compile twice the same sources with Maven and compared the hashes of the generated artifacts? They are not the same! Maven is not able to build an artifact in a real reproducible (i.e. byte-for-byte) way.
  
+ <<NOTE:>> <Recent versions of the main Maven plugins have been modified to allow reproducible builds without the use of this plugin. See {{{https://maven.apache.org/guides/mini/guide-reproducible-builds.html}Configuring for Reproducible Builds}} for more details.>
+ 
  This Maven plugin tries to strip "non reproducible" data from the generated artifacts. It follows the same goals as {{{https://wiki.debian.org/ReproducibleBuilds}Debian's Reproducible Builds project}} but at the modest scale of a Maven project.
  You can also have a look at my Devoxx France 2016 talk "{{{http://zlika.github.io/presentations/devoxx_fr_2016/reproducible-builds/slides_en.html}Bit-for-bit reproducible builds with Maven}}".
  
