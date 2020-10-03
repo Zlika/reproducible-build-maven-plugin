@@ -1,3 +1,13 @@
+Release 0.13 (2020/10/03)
+===========
+Features
+--------
+* [#36](https://github.com/Zlika/reproducible-build-maven-plugin/issues/36), [#46](https://github.com/Zlika/reproducible-build-maven-plugin/pull/46): Add configuration options to explicitly include/exclude files to be processed - [@io7m](https://github.com/io7m).
+
+Bug Fixes
+---------
+* Fix possible vulnerability (arbitrary file write during archive extraction) reported by Github CodeQL.
+
 Release 0.12 (2020/05/07)
 ===========
 Bug Fixes
