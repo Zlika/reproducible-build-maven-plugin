@@ -199,16 +199,16 @@ Usage
 
 * Include/Exclude files (since version 0.13)
 
-Each filename that the plugin inspects for stripping is first passed to a series of
-<inclusion> filters, and then to a series of <exclusion> filters. The filters are
-expressed as standard <<<java.util.Pattern>>> regular expressions. If the filename matches
-at least one <inclusion> filter, then it becomes a candidate for stripping. If the
-candidate filename matches at least one <exclusion> filter, then the file is no
-longer a candidate for stripping. By default, the plugin behaves as if no <exclusion>
-filter was provided, and exactly one <inclusion> filter was provided that matches
-all input (<<<.*>>>).
+  Each filename that the plugin inspects for stripping is first passed to a series of
+  <inclusion> filters, and then to a series of <exclusion> filters. The filters are
+  expressed as standard <<<java.util.Pattern>>> regular expressions. If the filename matches
+  at least one <inclusion> filter, then it becomes a candidate for stripping. If the
+  candidate filename matches at least one <exclusion> filter, then the file is no
+  longer a candidate for stripping. By default, the plugin behaves as if no <exclusion>
+  filter was provided, and exactly one <inclusion> filter was provided that matches
+  all input (<<<.*>>>).
 
-An example that will include all <<<example-*.jar>>> files except for <<<example-excluded.jar>>>:
+  An example that will include all <<<example-*.jar>>> files except for <<<example-excluded.jar>>>:
 
 +-----+
 <project>
