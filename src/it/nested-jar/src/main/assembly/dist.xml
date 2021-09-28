@@ -1,0 +1,13 @@
+<assembly>
+  <id>dist</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <files>
+    <file>
+      <source>${project.build.directory}/library.jar</source>
+      <outputDirectory>/</outputDirectory>
+    </file>
+  </files>
+</assembly>
