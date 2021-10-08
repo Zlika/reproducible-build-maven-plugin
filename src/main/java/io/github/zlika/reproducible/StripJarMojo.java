@@ -121,6 +121,17 @@ public final class StripJarMojo extends AbstractMojo
     @Parameter(property = "reproducible.excludes")
     private List<String> excludes;
 
+    /**
+     * A list of nested filename inclusion patterns. File names are checked against
+     * nested inclusion patterns and, if at least one nested inclusion pattern matches, the
+     * file is considered a candidate for stripping.
+     *
+     * By default, no nested files are included.
+     */
+
+    @Parameter(property = "reproducible.nestedIncludes")
+    private List<String> nestedIncludes;
+
     @Override
     public void execute() throws MojoExecutionException
     {
@@ -143,9 +154,25 @@ public final class StripJarMojo extends AbstractMojo
                     DateTimeFormatter.ofPattern(zipDateTimeFormatPattern));
             final ZipStripper zipStripper = new ZipStripper(reproducibleDateTime, fixZipExternalFileAttributes);
             newLineTextFiles.forEach(f -> zipStripper.addFileStripper(f, LineEndingsStripper.INSTANCE));
+            final DefaultZipStripper stripper = new DefaultZipStripper(zipStripper, this.overwrite,
+                    this.manifestAttributes);
+
+            if (this.nestedIncludes != null && !this.nestedIncludes.isEmpty())
+            {
+                final Stripper nestedFileStripper =
+                        new DefaultZipStripper(zipStripper, false, this.manifestAttributes);
+                for (final String include : this.nestedIncludes)
+                {
+                    if (include.endsWith("jar") || include.endsWith("zip"))
+                    {
+                        zipStripper.addFileStripper(include, nestedFileStripper);
+                    }
+                }
+            }
+
             this.process(
                 this.findZipFiles(this.outputDirectory),
-                new DefaultZipStripper(zipStripper, this.overwrite, this.manifestAttributes)
+                stripper
             );
             this.process(
                     this.findSpringBootExecutable(this.outputDirectory),
