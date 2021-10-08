@@ -1,3 +1,15 @@
+Release 0.14 (2021/10/08)
+===========
+Features
+--------
+* [#50](https://github.com/Zlika/reproducible-build-maven-plugin/pull/50): Add .adapter as a supported ZIP type - [@rhysm](https://github.com/rhysm).
+* [#52](https://github.com/Zlika/reproducible-build-maven-plugin/pull/52): Handle nested jars/zips when stripping jars/zips - [tobias-hammerschmidt](https://github.com/tobias-hammerschmidt)
+
+Non-functional changes
+----------------------
+* Upgrade commons-compress to fix CVE.
+* Upgrade junit to fix CVE.
+
 Release 0.13 (2020/10/03)
 ===========
 Features
