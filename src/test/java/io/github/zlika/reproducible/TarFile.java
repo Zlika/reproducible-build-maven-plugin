@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
@@ -64,7 +65,8 @@ final class TarFile
             {
                 result.add(tar.getCurrentEntry());
             }
-        } catch (final IOException fne)
+        }
+        catch (final IOException fne)
         {
             throw new IllegalArgumentException(
                 String.format(

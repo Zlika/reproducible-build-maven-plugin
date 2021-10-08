@@ -39,7 +39,7 @@ public enum LineEndingsStripper implements Stripper
     {
         try (final BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(out), StandardCharsets.UTF_8));
-         final BufferedReader reader = new BufferedReader(
+            final BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(in), StandardCharsets.UTF_8)))
         {
             reader.lines()

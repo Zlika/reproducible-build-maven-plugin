@@ -10,14 +10,13 @@
        value="^/\*$\n^ \* Licensed under the Apache License, Version 2.0 *"/>
   </module>
 
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="(^import +)|(^ *\* *[^ ]+$)|(^ *\* *@see)|(^ *\* *@author)|(^ *\* *\$Id)"/>
+  </module>
+
   <module name="NewlineAtEndOfFile"/>
   <module name="FileTabCharacter"/>
-
-  <module name="SuppressWithNearbyCommentFilter">
-    <property name="commentFormat" value="CHECKSTYLE IGNORE LINE\: ([\w\|]+)"/>
-    <property name="checkFormat" value="$1"/>
-    <property name="influenceFormat" value="1"/>
-  </module>
 
   <module name="SuppressionFilter">
     <property name="file" value="${config_loc}/checkstyle-suppressions.xml"/>
@@ -25,18 +24,19 @@
 
   <module name="TreeWalker">
 
-    <module name="FileContentsHolder"/>
+    <module name="SuppressWithNearbyCommentFilter">
+      <property name="commentFormat" value="CHECKSTYLE IGNORE LINE\: ([\w\|]+)"/>
+      <property name="checkFormat" value="$1"/>
+      <property name="influenceFormat" value="1"/>
+    </module>
 
     <!-- Javadoc Comments. -->
     <module name="JavadocType">
       <property name="scope" value="anoninner"/>
     </module>
     <module name="JavadocMethod">
-      <property name="scope" value="package"/>
       <property name="allowMissingParamTags" value="true"/>
       <property name="allowMissingReturnTag" value="true"/>
-      <property name="allowUndeclaredRTE" value="true"/>
-      <property name="suppressLoadErrors" value="true"/>
     </module>
     <module name="JavadocVariable">
       <property name="scope" value="package"/>
@@ -70,6 +70,7 @@
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
     <module name="ImportOrder">
+      <property name="groups" value="/^java\./,javax,org"/>
       <property name="ordered" value="true"/>
       <property name="separated" value="true"/>
       <property name="caseSensitive" value="true"/>
@@ -78,10 +79,6 @@
 
     <!-- Layout and whitespace. -->
     <module name="Indentation"/>
-    <module name="LineLength">
-      <property name="max" value="120"/>
-      <property name="ignorePattern" value="(^import +)|(^ *\* *[^ ]+$)|(^ *\* *@see)|(^ *\* *@author)|(^ *\* *\$Id)"/>
-    </module>
     <module name="EmptyForInitializerPad"/>
     <module name="EmptyForIteratorPad"/>
     <module name="MethodParamPad"/>

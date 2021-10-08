@@ -9,6 +9,7 @@ Non-functional changes
 ----------------------
 * Upgrade commons-compress to fix CVE.
 * Upgrade junit to fix CVE.
+* Upgrade Maven plugins.
 
 Release 0.13 (2020/10/03)
 ===========
