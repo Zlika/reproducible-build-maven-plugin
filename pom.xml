@@ -61,7 +61,7 @@
     <!-- Maven plugin versions -->
     <apache-source-release-assembly-descriptor.version>1.0.6</apache-source-release-assembly-descriptor.version>
     <checkstyle.version>9.0.1</checkstyle.version>
-    <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+    <coveralls-maven-plugin.version>4.4.1</coveralls-maven-plugin.version>
     <spotbugs-maven-plugin.version>4.4.1</spotbugs-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
     <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
@@ -247,7 +247,7 @@
         </plugin>
         
         <plugin>
-          <groupId>org.eluder.coveralls</groupId>
+          <groupId>io.jsonwebtoken.coveralls</groupId>
           <artifactId>coveralls-maven-plugin</artifactId>
           <version>${coveralls-maven-plugin.version}</version>
           <configuration>

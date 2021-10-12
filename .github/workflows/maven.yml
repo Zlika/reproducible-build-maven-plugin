@@ -17,17 +17,23 @@ jobs:
       matrix:
         java: [ '8', '11', '16' ]
     name: Build/Test with Java ${{ matrix.Java }}
+
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up JDK
       uses: actions/setup-java@v2
       with:
         java-version: ${{ matrix.java }}
         distribution: 'temurin'
         cache: maven
+
     - name: Build with Maven
       run: mvn clean install -Prun-its
+
     - name: Test coverage
+      # Only publish code coverage results for one JDK version
+      if: ${{ matrix.java == '8' }}
       run: mvn jacoco:report coveralls:report
       env:
         COVERALLS_API_KEY: ${{ secrets.COVERALLS_API_KEY }}
