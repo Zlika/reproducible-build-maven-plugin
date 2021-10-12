@@ -28,3 +28,6 @@ jobs:
       run: mvn clean install -Prun-its
     - name: Test coverage
       run: mvn jacoco:report coveralls:report
+      env:
+        COVERALLS_API_KEY: ${{ secrets.COVERALLS_API_KEY }}
+
