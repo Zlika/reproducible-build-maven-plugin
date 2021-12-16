@@ -73,7 +73,8 @@ final class DefaultZipStripper implements Stripper
             .addFileStripper("META-INF/sisu/javax.inject.Named", LineEndingsStripper.INSTANCE)
             .addFileStripper("META-INF/build-info.properties", new PropertiesFileStripper("build.time"))
             .addFileStripper("BOOT-INF/classes/git.properties", new PropertiesFileStripper(
-                    "git.build.host", "git.build.time", "git.build.user.email", "git.build.user.name"));
+                    "git.build.host", "git.build.time", "git.build.user.email", "git.build.user.name"))
+            .addFileStripper("META-INF/spring.factories", new PropertiesFileStripper());
         return zip;
     }
 }
