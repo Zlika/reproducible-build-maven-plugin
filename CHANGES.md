@@ -1,3 +1,9 @@
+Release 0.15 (2021/12/28)
+===========
+Features
+--------
+* [#55](https://github.com/Zlika/reproducible-build-maven-plugin/pull/55): Remove (unreproducible) comments from spring.factories files - [@arobie1992](https://github.com/arobie1992).
+
 Release 0.14 (2021/10/16)
 ===========
 Features
