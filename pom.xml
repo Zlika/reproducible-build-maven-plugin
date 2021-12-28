@@ -3,7 +3,7 @@
 
   <groupId>io.github.zlika</groupId>
   <artifactId>reproducible-build-maven-plugin</artifactId>
-  <version>0.15</version>
+  <version>0.16-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Reproducible Build Maven Plugin</name>
@@ -30,7 +30,7 @@
     <connection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</developerConnection>
     <url>https://github.com/Zlika/reproducible-build-maven-plugin</url>
-    <tag>v0.15</tag>
+    <tag>HEAD</tag>
   </scm>
   
   <issueManagement>
