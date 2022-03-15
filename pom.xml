@@ -57,6 +57,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.outputTimestamp>10</project.build.outputTimestamp>
     
     <!-- Maven plugin versions -->
     <apache-source-release-assembly-descriptor.version>1.0.6</apache-source-release-assembly-descriptor.version>
