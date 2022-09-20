@@ -31,47 +31,26 @@ import java.util.stream.Collectors;
  */
 final class SortManifestFileStripper implements Stripper
 {
-    private static final Comparator<String> MANIFEST_ENTRY_COMPARATOR = new Comparator<String>()
-    {
-        // CHECKSTYLE IGNORE LINE: ReturnCount
-        @Override
-        public int compare(String o1, String o2)
-        {
-            if (o1.startsWith("Manifest-Version:"))
-            {
-                return -1;
-            }
-            else if (o2.startsWith("Manifest-Version:"))
-            {
-                return 1;
-            }
-            // From the "JAR File Specification":
-            // Each section must start with an attribute with the name as "Name"
-            else if (o1.startsWith("Name:") && !o2.startsWith("Name:"))
-            {
-                return -1;
-            }
-            else if (o2.startsWith("Name:") && !o1.startsWith("Name:"))
-            {
-                return 1;
-            }
-            else
-            {
-                return o1.compareTo(o2);
-            }
-        }
-    };
-    
+    // CHECKSTYLE IGNORE LINE: ReturnCount
+    /*
+     * Change from new Comparator<String> to expression lambda
+     */
+    private static final Comparator<String> MANIFEST_ENTRY_COMPARATOR = (o1, o2) ->
+            (o1.startsWith("Manifest-Version:")) ? -1
+                    : (o2.startsWith("Manifest-Version:") ? 1
+                    : (o1.startsWith("Name:") && !o2.startsWith("Name:")) ? -1
+                    : (o2.startsWith("Name:") && !o1.startsWith("Name:")) ? 1 : o1.compareTo(o2));
+
     @Override
     public void strip(File in, File out) throws IOException
     {
         final List<String> lines = Files.readAllLines(in.toPath(), StandardCharsets.UTF_8);
-        
+
         try (final BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(out), StandardCharsets.UTF_8)))
         {
             final String sortedManifest = sortManifestSections(lines).stream()
-                                            .collect(Collectors.joining("\r\n"));
+                    .collect(Collectors.joining("\r\n"));
             try
             {
                 writer.write(sortedManifest + "\r\n");
@@ -81,7 +60,7 @@ final class SortManifestFileStripper implements Stripper
             }
         }
     }
-    
+
     private List<String> sortManifestSections(List<String> lines)
     {
         final List<List<String>> sections = new ArrayList<>();
@@ -106,14 +85,14 @@ final class SortManifestFileStripper implements Stripper
         {
             sections.add(currentSection);
         }
-        
+
         return sections.stream()
-                        .map(list -> sortAttributes(list))
-                        .map(list -> String.join("", list))
-                        .sorted(MANIFEST_ENTRY_COMPARATOR)
-                        .collect(Collectors.toList());
+                .map(list -> sortAttributes(list))
+                .map(list -> String.join("", list))
+                .sorted(MANIFEST_ENTRY_COMPARATOR)
+                .collect(Collectors.toList());
     }
-    
+
     private List<String> sortAttributes(List<String> lines)
     {
         final List<String> attributes = new ArrayList<>();

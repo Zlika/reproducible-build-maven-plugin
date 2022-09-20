@@ -44,7 +44,7 @@ class LineNumberStripper implements Stripper
                 new OutputStreamWriter(new FileOutputStream(out), StandardCharsets.UTF_8)))
         {
             final List<String> lines = Files.readAllLines(in.toPath(), StandardCharsets.UTF_8);
-            for (int i = 0; i < lines.size(); i++)
+            for (int i = 0; i < lines.size(); ++i)
             {
                 if (i != lineNumber)
                 {

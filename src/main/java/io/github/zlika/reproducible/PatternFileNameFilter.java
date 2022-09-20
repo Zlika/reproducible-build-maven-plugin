@@ -26,18 +26,18 @@ import org.apache.maven.plugin.logging.Log;
 
 /**
  * A pattern-based filename filter.
- *
+ * <p>
  * An incoming filename is first checked to see if it has a suitable file
  * extension. If it doesn't, evaluation halts and the file is rejected.
- *
+ * <p>
  * The name is then checked against a series of inclusion patterns. If the
  * name doesn't match any of the inclusion patterns, evaluation halts and the
  * file is rejected.
- *
+ * <p>
  * The name is then checked against a series of exclusion patterns. If the
  * name matches at least one of the exclusion patterns, evaluation halts and
  * the file is rejected.
- *
+ * <p>
  * Otherwise, the file is accepted.
  */
 
