@@ -31,14 +31,18 @@ import java.util.List;
 final class JaxbObjectFactoryFixer implements Stripper
 {
     private static final String END_OF_METHOD = "    }";
+    private final List<String> matchingCommentTexts;
     private final Charset charset;
     
     /**
      * Constructor.
-     * @param charset the charset of the Java files to be processed.
+     *
+     * @param matchingCommentText the texts for which at least one must be contained in the files to be processed.
+     * @param charset             the charset of the Java files to be processed.
      */
-    public JaxbObjectFactoryFixer(Charset charset)
+    public JaxbObjectFactoryFixer(List<String> matchingCommentText, Charset charset)
     {
+        this.matchingCommentTexts = matchingCommentText;
         this.charset = charset;
     }
     
@@ -87,7 +91,7 @@ final class JaxbObjectFactoryFixer implements Stripper
 
     private boolean checkIsXjcObjectFactoryFile(String content)
     {
-        return content.contains("JavaTM Architecture for XML Binding")
+        return matchingCommentTexts.stream().anyMatch(content::contains)
                 && content.contains("public ObjectFactory()");
     }
 }
