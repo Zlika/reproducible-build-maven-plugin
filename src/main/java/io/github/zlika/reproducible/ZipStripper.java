@@ -21,6 +21,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -49,7 +50,7 @@ public final class ZipStripper implements Stripper
     private static final long DEFAULT_ZIP_TIMESTAMP
                 = LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0).atZone(ZoneOffset.systemDefault())
                     .toInstant().toEpochMilli();
-    
+
     /**
      * Comparator used to sort the files in the ZIP file.
      * This is mostly an alphabetical order comparator, with the exception that
@@ -82,7 +83,7 @@ public final class ZipStripper implements Stripper
             return o1.compareTo(o2);
         }
     };
-    
+
     private final Map<String, Stripper> subFilters = new HashMap<>();
 
     private final long zipTimestamp;
@@ -108,7 +109,7 @@ public final class ZipStripper implements Stripper
         zipTimestamp = zipDateTime.atZone(ZoneOffset.systemDefault()).toInstant().toEpochMilli();
         this.fixZipExternalFileAttributes = fixZipExternalFileAttributes;
     }
-    
+
     /**
      * Adds a stripper for a given file in the Zip.
      * @param filename the name of the file in the Zip (regular expression).
@@ -120,7 +121,7 @@ public final class ZipStripper implements Stripper
         subFilters.put(filename, stripper);
         return this;
     }
-    
+
     @Override
     public void strip(File in, File out) throws IOException
     {
@@ -137,6 +138,10 @@ public final class ZipStripper implements Stripper
                 if (in.getName().endsWith(".jar") || in.getName().endsWith(".war"))
                 {
                     fixAttributes(strippedEntry);
+                }
+                else if (in.getName().endsWith(".zip"))
+                {
+                    fixStickyAttributes(strippedEntry);
                 }
                 // Strip file if required
                 final Stripper stripper = getSubFilter(name);
@@ -164,7 +169,7 @@ public final class ZipStripper implements Stripper
             }
         }
     }
-    
+
     private void fixAttributes(ZipArchiveEntry entry)
     {
         if (fixZipExternalFileAttributes)
@@ -187,7 +192,29 @@ public final class ZipStripper implements Stripper
             }
         }
     }
-    
+
+    private void fixStickyAttributes(ZipArchiveEntry entry)
+    {
+        if (fixZipExternalFileAttributes)
+        {
+            /* ZIP external file attributes:
+               TTTTsstrwxrwxrwx0000000000ADVSHR
+               ^^^^____________________________ file type
+                                                (file: 1000 , dir: 0100)
+                   ^^^_________________________ setuid, setgid, sticky
+                      ^^^^^^^^^________________ Unix permissions
+                                         ^^^^^^ DOS attributes
+               The argument of setUnixMode() only takes the 2 upper bytes. */
+
+            BitSet bits = BitSet.valueOf(new long[]{entry.getUnixMode()});
+
+            // unset all sticky bits
+            bits.set(9, 11, false);
+
+            entry.setUnixMode((int) bits.toLongArray()[0]);
+        }
+    }
+
     private Stripper getSubFilter(String name)
     {
         for (Entry<String, Stripper> filter : subFilters.entrySet())
@@ -199,7 +226,7 @@ public final class ZipStripper implements Stripper
         }
         return null;
     }
-    
+
     private List<String> sortEntriesByName(Enumeration<ZipArchiveEntry> entries)
     {
         return Collections.list(entries).stream()
@@ -207,7 +234,7 @@ public final class ZipStripper implements Stripper
                 .sorted(MANIFEST_FILE_SORT_COMPARATOR)
                 .collect(Collectors.toList());
     }
-    
+
     private ZipArchiveEntry filterZipEntry(ZipArchiveEntry entry)
     {
         // Set times
