@@ -1,3 +1,13 @@
+Release 0.16 (2022/10/21)
+===========
+Features
+--------
+* [#59](https://github.com/Zlika/reproducible-build-maven-plugin/pull/59): Make strip-jaxb also work with the org.glassfish xjc implementation - [@nilsaellen](https://github.com/nilsaellen).
+
+Non-functional changes
+----------------------
+* Upgrade maven plugins.
+
 Release 0.15 (2021/12/28)
 ===========
 Features
