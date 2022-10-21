@@ -7,6 +7,7 @@ Features
 Non-functional changes
 ----------------------
 * Upgrade maven plugins.
+* Fix wrong scope for maven-plugin-api.
 
 Release 0.15 (2021/12/28)
 ===========
