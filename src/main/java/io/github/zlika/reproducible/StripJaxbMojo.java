@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -225,9 +224,9 @@ public final class StripJaxbMojo extends AbstractMojo
                 .map(XjcGenerator::getMatchingCommentText)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        if (StringUtils.isNotBlank(matchingCommentText))
+        if ((matchingCommentText != null) && (!matchingCommentText.trim().isEmpty()))
         {
-            matchingCommentTexts.add(matchingCommentText);
+            matchingCommentTexts.add(matchingCommentText.trim());
         }
 
         return matchingCommentTexts;
