@@ -1,22 +1,19 @@
-<project xmlns="http://maven.apache.org/DECORATION/1.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd"
-    name="Reproducible Build Maven Plugin">
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd"
+    name="${project.name}">
 
   <bannerLeft>
-    <name>Reproducible Build Maven Plugin</name>
+    <name>${project.name}</name>
   </bannerLeft>
 
   <skin>
     <groupId>org.apache.maven.skins</groupId>
     <artifactId>maven-fluido-skin</artifactId>
-    <version>1.6</version>
+    <version>2.0.0-M3</version>
   </skin>
 
   <custom>
     <fluidoSkin>
-      <topBarEnabled>false</topBarEnabled>
-      <sideBarEnabled>true</sideBarEnabled>
-      <breadcrumbDivider>/</breadcrumbDivider>
       <gitHub>
         <projectId>zlika/reproducible-build-maven-plugin</projectId>
         <ribbonOrientation>right</ribbonOrientation>
@@ -25,13 +22,13 @@
     </fluidoSkin>
   </custom>
 
-  <publishDate format="yyyy-MM-dd" position="right"/>
+  <publishDate position="right"/>
   <version position="right"/>
 
   <body>
 
     <breadcrumbs>
-      <item name="Reproducible Build Maven Plugin" href="index.html"/>
+      <item name="${project.name}" href="index.html"/>
     </breadcrumbs>
 
     <menu name="Overview">
