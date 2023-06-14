@@ -18,19 +18,19 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
- * Process tar formats: tar, tar.gz, tar.bz2 using the default configuriaton
- * and the right tar stripper implementation.
+ * Process archive formats: tar, tar.gz, tar.bz2, ar, cpio using the default configuration
+ * and the right stripper implementation.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  */
-final class SmartTarStripper implements Stripper
+final class SmartArchiveStripper implements Stripper
 {
     private final LocalDateTime reproducibleDateTime;
 
     /**
      * Constructor.
-     * @param reproducibleDateTime the date/time to use in TAR entries.
+     * @param reproducibleDateTime the date/time to use in the archive entries.
      */
-    public SmartTarStripper(LocalDateTime reproducibleDateTime)
+    public SmartArchiveStripper(LocalDateTime reproducibleDateTime)
     {
         this.reproducibleDateTime = reproducibleDateTime;
     }
@@ -50,19 +50,13 @@ final class SmartTarStripper implements Stripper
     private Stripper findImplementation(File file)
     {
         final String name = file.getName();
-        final Stripper impl;
-        if (name.endsWith(".tar.gz"))
+        if (name.endsWith(".tar.gz") || name.endsWith(".tar.bz2"))
         {
-            impl = new TarGzStripper(reproducibleDateTime);
-        }
-        else if (name.endsWith(".tar.bz2"))
-        {
-            impl = new TarBzStripper(reproducibleDateTime);
+            return new CompressedArchiveStripper(reproducibleDateTime);
         }
         else
         {
-            impl = new TarStripper(reproducibleDateTime);
+            return new ArchiveStripper(reproducibleDateTime);
         }
-        return impl;
     }
 }

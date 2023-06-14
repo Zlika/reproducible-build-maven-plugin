@@ -30,16 +30,15 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Fixes the produced artifacts (ZIP/JAR/WAR/EAR) to make the build reproducible.
+ * Fixes the produced artifacts to make the build reproducible.
  */
 @Mojo(name = "strip-jar", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST,
         requiresProject = false, threadSafe = true)
 public final class StripJarMojo extends AbstractMojo
 {
     private static final List<String> ZIP_EXT = Arrays.asList("zip", "jar", "war", "ear", "hpi", "adapter");
-    private static final List<String>  TAR_GZ_EXT = Collections.singletonList("tar.gz");
-    private static final List<String>  TAR_BZ_EXT = Collections.singletonList("tar.bz2");
-    private static final List<String>  TAR_EXT = Collections.singletonList("tar");
+    private static final List<String> ARCHIVE_EXT =
+            Arrays.asList(".tar", ".tar.gz", ".tar.bz2", ".tgz", ".cpio", ".rpm", ".ar", ".deb");
     private static final byte[] ZIP_FILE_HEADER = new byte[] { 0x50, 0x4B, 0x03, 0x04 };
     private static final byte[] SPRING_BOOT_EXEC_HEADER = new byte[] { 0x23, 0x21, 0x2F, 0x62, 0x69, 0x6E };
 
@@ -181,16 +180,8 @@ public final class StripJarMojo extends AbstractMojo
                                 new DefaultZipStripper(zipStripper, this.manifestAttributes)))
             );
             this.process(
-                this.findTarFiles(this.outputDirectory),
-                new OverwriteStripper(this.overwrite, new SmartTarStripper(reproducibleDateTime))
-            );
-            this.process(
-                this.findTarBzFiles(this.outputDirectory),
-                new OverwriteStripper(this.overwrite, new SmartTarStripper(reproducibleDateTime))
-            );
-            this.process(
-                this.findTarGzFiles(this.outputDirectory),
-                new OverwriteStripper(this.overwrite, new SmartTarStripper(reproducibleDateTime))
+                this.findArchiveFiles(this.outputDirectory),
+                        new OverwriteStripper(this.overwrite, new SmartArchiveStripper(reproducibleDateTime))
             );
         }
     }
@@ -267,28 +258,12 @@ public final class StripJarMojo extends AbstractMojo
         return header;
     }
 
-    private File[] findTarBzFiles(final File folder)
+    private File[] findArchiveFiles(final File folder)
     {
         final PatternFileNameFilter filter =
-                PatternFileNameFilter.of(this.getLog(), this.includes, this.excludes, TAR_BZ_EXT);
-        final File[] tbzFiles = folder.listFiles(filter);
-        return tbzFiles != null ? tbzFiles : new File[0];
-    }
-
-    private File[] findTarGzFiles(final File folder)
-    {
-        final PatternFileNameFilter filter =
-                PatternFileNameFilter.of(this.getLog(), this.includes, this.excludes, TAR_GZ_EXT);
-        final File[] tgzFiles = folder.listFiles(filter);
-        return tgzFiles != null ? tgzFiles : new File[0];
-    }
-
-    private File[] findTarFiles(final File folder)
-    {
-        final PatternFileNameFilter filter =
-                PatternFileNameFilter.of(this.getLog(), this.includes, this.excludes, TAR_EXT);
-        final File[] tarFiles = folder.listFiles(filter);
-        return tarFiles != null ? tarFiles : new File[0];
+                PatternFileNameFilter.of(this.getLog(), this.includes, this.excludes, ARCHIVE_EXT);
+        final File[] archiveFiles = folder.listFiles(filter);
+        return archiveFiles != null ? archiveFiles : new File[0];
     }
 
     private File createStrippedFilename(final File originalFile)
