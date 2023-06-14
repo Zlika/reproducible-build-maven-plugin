@@ -15,8 +15,6 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,10 +25,6 @@ import java.util.List;
 final class DefaultZipStripper implements Stripper
 {
     /**
-     * Whether the original file should be overwritten.
-     */
-    private final boolean overwrite;
-    /**
      * The ZipStripper to configure.
      */
     private final ZipStripper stripper;
@@ -39,12 +33,10 @@ final class DefaultZipStripper implements Stripper
     /**
      * Constructor.
      * @param stripper The ZipStripper to wrap with default config.
-     * @param overwrite Overwrite original file.
      * @param manifestAttributes Additional manifest attributes to skip.
      */
-    public DefaultZipStripper(ZipStripper stripper, boolean overwrite, List<String> manifestAttributes)
+    public DefaultZipStripper(ZipStripper stripper, List<String> manifestAttributes)
     {
-        this.overwrite = overwrite;
         this.manifestAttributes = Collections.unmodifiableList(manifestAttributes);
         this.stripper = configure(stripper);
     }
@@ -53,10 +45,6 @@ final class DefaultZipStripper implements Stripper
     public void strip(File zip, File stripped) throws IOException
     {
         this.stripper.strip(zip, stripped);
-        if (this.overwrite)
-        {
-            Files.move(stripped.toPath(), zip.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
     }
 
     /**

@@ -15,8 +15,6 @@ package io.github.zlika.reproducible;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 
 /**
@@ -26,20 +24,14 @@ import java.time.LocalDateTime;
  */
 final class SmartTarStripper implements Stripper
 {
-    /**
-     * Whether the original file should be overwritten.
-     */
-    private final boolean overwrite;
     private final LocalDateTime reproducibleDateTime;
 
     /**
      * Constructor.
-     * @param overwrite Overwrite original file.
      * @param reproducibleDateTime the date/time to use in TAR entries.
      */
-    public SmartTarStripper(boolean overwrite, LocalDateTime reproducibleDateTime)
+    public SmartTarStripper(LocalDateTime reproducibleDateTime)
     {
-        this.overwrite = overwrite;
         this.reproducibleDateTime = reproducibleDateTime;
     }
 
@@ -48,10 +40,6 @@ final class SmartTarStripper implements Stripper
     {
         final Stripper stripper = findImplementation(file);
         stripper.strip(file, stripped);
-        if (this.overwrite)
-        {
-            Files.move(stripped.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
     }
 
     /**
