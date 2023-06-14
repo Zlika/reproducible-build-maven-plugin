@@ -154,13 +154,13 @@ public final class StripJarMojo extends AbstractMojo
                     DateTimeFormatter.ofPattern(zipDateTimeFormatPattern));
             final ZipStripper zipStripper = new ZipStripper(reproducibleDateTime, fixZipExternalFileAttributes);
             newLineTextFiles.forEach(f -> zipStripper.addFileStripper(f, LineEndingsStripper.INSTANCE));
-            final DefaultZipStripper stripper = new DefaultZipStripper(zipStripper, this.overwrite,
-                    this.manifestAttributes);
+            final Stripper stripper = new OverwriteStripper(this.overwrite, new DefaultZipStripper(zipStripper,
+                    this.manifestAttributes));
 
             if (this.nestedIncludes != null && !this.nestedIncludes.isEmpty())
             {
                 final Stripper nestedFileStripper =
-                        new DefaultZipStripper(zipStripper, false, this.manifestAttributes);
+                        new DefaultZipStripper(zipStripper, this.manifestAttributes);
                 for (final String include : this.nestedIncludes)
                 {
                     if (include.endsWith("jar") || include.endsWith("zip"))
@@ -175,21 +175,22 @@ public final class StripJarMojo extends AbstractMojo
                 stripper
             );
             this.process(
-                    this.findSpringBootExecutable(this.outputDirectory),
-                    new SpringBootExecutableStripper(this.overwrite,
-                            new DefaultZipStripper(zipStripper, false, this.manifestAttributes))
+                this.findSpringBootExecutable(this.outputDirectory),
+                new OverwriteStripper(this.overwrite,
+                        new SpringBootExecutableStripper(
+                                new DefaultZipStripper(zipStripper, this.manifestAttributes)))
             );
             this.process(
                 this.findTarFiles(this.outputDirectory),
-                new SmartTarStripper(this.overwrite, reproducibleDateTime)
+                new OverwriteStripper(this.overwrite, new SmartTarStripper(reproducibleDateTime))
             );
             this.process(
                 this.findTarBzFiles(this.outputDirectory),
-                new SmartTarStripper(this.overwrite, reproducibleDateTime)
+                new OverwriteStripper(this.overwrite, new SmartTarStripper(reproducibleDateTime))
             );
             this.process(
                 this.findTarGzFiles(this.outputDirectory),
-                new SmartTarStripper(this.overwrite, reproducibleDateTime)
+                new OverwriteStripper(this.overwrite, new SmartTarStripper(reproducibleDateTime))
             );
         }
     }

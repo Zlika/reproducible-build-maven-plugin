@@ -22,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 /**
  * Strips non-reproducible data from a JAR/WAR/ZIP file repackaged by
@@ -37,17 +36,14 @@ public class SpringBootExecutableStripper implements Stripper
     private static final byte[] ZIP_FILE_HEADER = new byte[] { 0x50, 0x4B, 0x03, 0x04 };
     
     private final DefaultZipStripper zipStripper;
-    private final boolean overwrite;
     
     /**
      * Constructor.
-     * @param overwrite true to overwrite the original file.
      * @param zipStripper Stripper to use to process the ZIP file.
      */
-    public SpringBootExecutableStripper(boolean overwrite, DefaultZipStripper zipStripper)
+    public SpringBootExecutableStripper(DefaultZipStripper zipStripper)
     {
         this.zipStripper = zipStripper;
-        this.overwrite = overwrite;
     }
     
     @Override
@@ -68,10 +64,6 @@ public class SpringBootExecutableStripper implements Stripper
         {
             Files.delete(tmp.toPath());
             Files.delete(tmp2.toPath());
-        }
-        if (this.overwrite)
-        {
-            Files.move(out.toPath(), in.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
