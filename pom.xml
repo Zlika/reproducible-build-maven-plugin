@@ -13,7 +13,7 @@
   <inceptionYear>2015</inceptionYear>
   <licenses>
     <license>
-      <name>Apache 2.0</name>
+      <name>Apache-2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
@@ -75,15 +75,15 @@
     <maven-invoker-plugin.version>3.3.0</maven-invoker-plugin.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
-    <maven-plugin-plugin.version>3.6.4</maven-plugin-plugin.version>
-    <maven-project-info-reports-plugin.version>3.4.1</maven-project-info-reports-plugin.version>
+    <maven-plugin-plugin.version>3.7.1</maven-plugin-plugin.version>
+    <maven-project-info-reports-plugin.version>3.4.2</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>3.0.0-M6</maven-release-plugin.version>
     <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
     <maven-scm.version>2.0.0-M2</maven-scm.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-    <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
-    <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
+    <maven-site-plugin.version>4.0.0-M5</maven-site-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.0.0-M9</maven-surefire-report-plugin.version>
     <wagon-gitsite.version>0.3.1</wagon-gitsite.version>
     
     <!-- Dependency versions -->
@@ -346,7 +346,7 @@
       <!-- Plugin documentation report -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
+        <artifactId>maven-plugin-report-plugin</artifactId>
         <version>${maven-plugin-plugin.version}</version>
         <configuration>
           <requirements>
