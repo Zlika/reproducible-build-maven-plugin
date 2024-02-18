@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.apache.commons.compress.archivers.zip.X000A_NTFS;
 import org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -218,6 +219,10 @@ public final class ZipStripper implements Stripper
         // Remove extended timestamps
         for (ZipExtraField field : entry.getExtraFields())
         {
+            if (field instanceof X000A_NTFS)
+            {
+                entry.removeExtraField(field.getHeaderId());
+            }
             if (field instanceof X5455_ExtendedTimestamp)
             {
                 entry.removeExtraField(field.getHeaderId());
