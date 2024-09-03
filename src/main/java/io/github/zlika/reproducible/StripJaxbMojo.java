@@ -113,6 +113,9 @@ public final class StripJaxbMojo extends AbstractMojo
     @Parameter(defaultValue = "", property = "reproducible.matchingCommentText")
     private String matchingCommentText;
 
+    @Parameter(defaultValue = "CRLF", property = "reproducible.lineSeparator")
+    private LineSeparators lineSeparator;
+
     @Override
     public void execute() throws MojoExecutionException
     {
@@ -135,8 +138,10 @@ public final class StripJaxbMojo extends AbstractMojo
         final Charset charset = Charset.forName(encoding);
         final JaxbObjectFactoryFixer objectFactoryFixer = new JaxbObjectFactoryFixer(getMatchingCommentTexts(),
                 charset);
-        final LineNumberStripper jaxbFileDateStripper = new LineNumberStripper(JAXB_FILE_TIMESTAMP_LINE_NUMBER);
-        final LineNumberStripper jaxbEpisodeDateStripper = new LineNumberStripper(JAXB_EPISODE_TIMESTAMP_LINE_NUMBER);
+        final LineNumberStripper jaxbFileDateStripper =
+            new LineNumberStripper(JAXB_FILE_TIMESTAMP_LINE_NUMBER, lineSeparator);
+        final LineNumberStripper jaxbEpisodeDateStripper =
+            new LineNumberStripper(JAXB_EPISODE_TIMESTAMP_LINE_NUMBER, lineSeparator);
         final File tmpFile = createTempFile();
         
         try

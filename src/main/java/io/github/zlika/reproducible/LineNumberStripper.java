@@ -26,15 +26,19 @@ import java.util.List;
 /** Removes a given line in a text file based on the line number. */
 class LineNumberStripper implements Stripper
 {
-    private int lineNumber;
-    
+    private final int lineNumber;
+    private final LineSeparators lineSeparator;
+
     /**
      * Constructor.
+     *
      * @param lineNumber the line number to remove.
+     * @param lineEnding the line ending of file.
      */
-    public LineNumberStripper(int lineNumber)
+    public LineNumberStripper(int lineNumber, LineSeparators lineEnding)
     {
         this.lineNumber = lineNumber;
+        this.lineSeparator = lineEnding;
     }
     
     @Override
@@ -51,7 +55,7 @@ class LineNumberStripper implements Stripper
                     try
                     {
                         writer.write(lines.get(i));
-                        writer.write("\r\n");
+                        writer.write(lineSeparator.get());
                     }
                     catch (IOException e)
                     {
