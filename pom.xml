@@ -27,8 +27,8 @@
   </developers>
   
   <scm>
-    <connection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:Zlika/reproducible-build-maven-plugin.git</developerConnection>
+    <connection>scm:git:https://github.com/Zlika/reproducible-build-maven-plugin.git</connection>
+    <developerConnection>scm:git:https://github.com/Zlika/reproducible-build-maven-plugin.git</developerConnection>
     <url>https://github.com/Zlika/reproducible-build-maven-plugin</url>
     <tag>HEAD</tag>
   </scm>
@@ -49,7 +49,7 @@
     </repository>
     <site>
       <id>github-project-site</id>
-      <url>gitsite:git@github.com/Zlika/reproducible-build-maven-plugin.git</url>
+      <url>gitsite:https://github.com/Zlika/reproducible-build-maven-plugin.git</url>
     </site>
   </distributionManagement>
 
