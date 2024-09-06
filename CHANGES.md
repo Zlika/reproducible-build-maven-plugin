@@ -1,3 +1,14 @@
+Release 0.17 (2024/09/06)
+===========
+Features
+--------
+* [#71](https://github.com/Zlika/reproducible-build-maven-plugin/pull/71): Allow define lineseparator for strip-jaxb - [@rimuln](https://github.com/rimuln).
+* [#64](https://github.com/Zlika/reproducible-build-maven-plugin/pull/64): Support more archive formats (cpio, ar) - [@ebourg](https://github.com/ebourg).
+
+Non-functional changes
+----------------------
+* Update commons-compress dependency.
+
 Release 0.16 (2022/10/21)
 ===========
 Features
