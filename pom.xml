@@ -101,27 +101,27 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>${maven-plugin-api.version}</version>
+      <version>3.6.0</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>${maven-plugin-annotations.version}</version>
+      <version>3.6.1</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>${plexus-utils.version}</version>
+      <version>3.4.2</version>
     </dependency>
     
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-      <version>${commons-compress.version}</version>
+      <version>1.26.0</version>
       <exclusions>
         <exclusion>
           <groupId>com.github.luben</groupId>
@@ -141,13 +141,13 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>${commons-codec.version}</version>
+      <version>1.16.1</version>
     </dependency>
     
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     
